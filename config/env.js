@@ -1,9 +1,7 @@
 import dotenv from "dotenv";
 
-// Load .env file based on NODE_ENV
 dotenv.config({ path: `.env.${process.env.NODE_ENV || 'development'}.local` });
 
-// Export variables
 export const PORT = process.env.PORT ? Number(process.env.PORT) : 5000;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
 export const DB_URI = process.env.DB_URI;

@@ -22,6 +22,18 @@ const surveyFormSchema = new mongoose.Schema(
       trim: true,
       maxLength: 10,
     },
+    PostOffice:{
+      type: String,
+      required: [true, "Post Office is required"],
+      trim: true,
+      maxLength: 10,
+    },
+    Pincode:{
+      type: String,
+      required: [true, "Pin Code is required"],
+      trim: true,
+      match: [/^\d{6}$/, "Invalid pincode format (should be 6 digits)"],
+    },
     HouseholdHead: {
       type: String,
       required: [true, "Household head name is required"],
@@ -31,61 +43,68 @@ const surveyFormSchema = new mongoose.Schema(
     },
     HouseName: { type: String, trim: true, maxLength: 100 },
     HouseNo: { type: String, trim: true, maxLength: 20 },
-    PostOffice: { type: String, trim: true, maxLength: 100 },
-    Pincode: {
-      type: String,
-      trim: true,
-      match: [/^\d{6}$/, "Invalid pincode format (should be 6 digits)"],
-    },
     FamilymembersNO: {
       type: String,
       trim: true,
       match: [/^\d+$/, "Family member count must be a number"],
     },
     RationCardType: { type: String, trim: true, maxLength: 50 },
-    RationCardTypeNO: { type: String, trim: true, maxLength: 20 },
-
     GasConnection: { type: Boolean, default: false },
     WoodStove: { type: Boolean, default: false },
     TypeofWoodStove: { type: String, trim: true, maxLength: 50 },
     Electricity: { type: Boolean, default: false },
     Solar: { type: Boolean, default: false },
+    ResidentialHouse:{type: String, trim: true, maxLength: 50},
+    HabitableHouse:{type: Boolean, default: false},
     TypeofHouse: { type: String, trim: true, maxLength: 50 },
     AreaofHouse: { type: String, trim: true, maxLength: 50 },
-    NoofVehicles: {
+     TwoWheeler:{
       type: String,
       trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"],
+      match: [/^\d+$/, "Number of vehicles must be a number"]
     },
+     ThreeWheeler:{
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Number of vehicles must be a number"]
+     },
+     FourWheeler:{
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Number of vehicles must be a number"]
+     },
+     Other:{
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Number of vehicles must be a number"]
+     },
     Noofpeopleworkings: {
       type: String,
       trim: true,
       match: [/^\d+$/, "Working people count must be a number"],
     },
-    AreaofLand_Paddyland: { type: String, trim: true, maxLength: 50 },
-    AreaofLand_Dryland: { type: String, trim: true, maxLength: 50 },
-    AreaofLand_Wetland: { type: String, trim: true, maxLength: 50 },
-    AreaofLand_Pond: { type: String, trim: true, maxLength: 50 },
-    AreaofLand_Chaalu: { type: String, trim: true, maxLength: 50 },
-    CurrentCultivationDetails: { type: String, trim: true, maxLength: 200 },
-
+    RegularIncomePeople:{
+      type:String, 
+      trim:true,
+       match: [/^\d+$/, "Number of vehicles must be a number"]
+    },
+    MonthlyHouseholdIncome:{ type: String,
+      trim: true,
+      match: [/^\d+$/, "Working people count must be a number"]
+    },
+   
+    AreaofLand_Paddyland: { type: String, trim: true, maxLength: 50 , allowNull: true},
+    AreaofLand_Dryland: { type: String, trim: true, maxLength: 50,allowNull: true },
+    CurrentCultivationDetails: { type: String, trim: true, maxLength: 200,allowNull: true },
     ToiletFacilities: { type: Boolean, default: false },
+    ToiletTankType:{ type: String, trim: true, maxLength: 100 },
     AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
+    KWAConnection:{ type: Boolean, default: false },
     OrganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
     InorganicWasteManagementMethod: {
       type: String,
       trim: true,
       maxLength: 100,
-    },
-    NoofpeoplewithPermanentjob: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Permanent job count must be a number"],
-    },
-    familyMonthlyIncome: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Monthly income must be a number"],
     },
     OtherMethodInorganicWasteManagement: {
       type: String,

@@ -21,8 +21,7 @@ const familySchema = new mongoose.Schema(
     },
     Gender: {
       type: String,
-      required: [true, "Gender is required"],
-      enum: ["Male", "Female", "Other"],
+      required: [true, "Gender is required"]
     },
     Relation: {
       type: String,

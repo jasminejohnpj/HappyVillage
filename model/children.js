@@ -65,6 +65,12 @@ const ChildSchema = new mongoose.Schema(
       trim: true,
       maxLength: 100,
     },
+    Otheroccupations:
+    {
+      type: String,
+      trim: true,
+      maxLength: 100,
+    },
     ArtisticorAthleticAptitude: {
       type: String,
       trim: true,
@@ -87,6 +93,14 @@ const ChildSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    Vaccination:{
+       type: Boolean,
+      default: false,
+    },
+    GettingPension:{
+       type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

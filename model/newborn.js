@@ -44,6 +44,10 @@ const newbornSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    Vaccination:{
+       type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

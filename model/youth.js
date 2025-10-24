@@ -43,7 +43,20 @@ const youthSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    OtherQualification:{
+       type: String,
+      trim: true,
+    },
+    
     CurrentlyStudying: {
+      type: String,
+      trim: true,
+    },
+    OtherCourse:{
+      type: String,
+      trim: true,
+    },
+    EducationMainSubject:{
       type: String,
       trim: true,
     },
@@ -67,6 +80,7 @@ const youthSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+
     InstitutionName: {
       type: String,
       trim: true,
@@ -115,6 +129,18 @@ const youthSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    LifestyleDisease:{
+       type: Boolean,
+      default: false,
+    },
+  LifestyleDiseaseType:{
+      type: String,
+      trim: true,
+    },
+    GettingPension:{
+       type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
