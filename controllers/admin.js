@@ -10,6 +10,9 @@ import Middleage from "../model/middleAge.js";
 import SeniorCitizen from "../model/seniorCitizen.js";
 import Supercitizen from "../model/superCitizen.js";
 import mongoose from "mongoose";
+
+
+
 export const registerSuperAdmin = async (req, res, next) => {
   try {
     const { userName, mobile, password } = req.body;

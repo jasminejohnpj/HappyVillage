@@ -62,29 +62,23 @@ const surveyFormSchema = new mongoose.Schema(
     HabitableHouse:{type: Boolean, default: false},
     TypeofHouse: { type: String, trim: true, maxLength: 50 },
     AreaofHouse: { type: String, trim: true, maxLength: 50 },
-     TwoWheeler: {
-  type: Number,
-  min: [0, "Number of vehicles cannot be negative"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Number of vehicles must be an integer"
-  }
+    Noofpeopleworkings: {
+  type: String,
+  trim: true,
+  match: [/^\d+$/, "Working people count must be a number"],
+  default: null
 },
-ThreeWheeler: {
-  type: Number,
-  min: [0, "Number of vehicles cannot be negative"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Number of vehicles must be an integer"
-  }
+RegularIncomePeople: {
+  type: String,
+  trim: true,
+  match: [/^\d+$/, "Regular income people count must be a number"],
+  default: null
 },
-FourWheeler: {
-  type: Number,
-  min: [0, "Number of vehicles cannot be negative"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Number of vehicles must be an integer"
-  }
+MonthlyHouseholdIncome: {
+  type: String,
+  trim: true,
+  match: [/^\d+$/, "Monthly household income must be a number"],
+  default: null
 },
      Other:{
       type: String,

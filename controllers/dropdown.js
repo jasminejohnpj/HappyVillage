@@ -55,7 +55,7 @@ export const getWardNumbers = async (req, res, next) => {
 
         if (Panchayath === "aryad") {
             wardNumbers = [16, 17];
-        } else if (Panchayath === "maarikulam south") {
+        } else if (Panchayath === "mararikulam south") {
             wardNumbers = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
         }
 

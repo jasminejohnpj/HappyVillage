@@ -42,7 +42,6 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res) => {
   try {
     const { mobile, password } = req.body;
-console.log("...");
     const user = await Admin.findOne({ mobile });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
