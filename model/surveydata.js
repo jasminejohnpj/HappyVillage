@@ -17,6 +17,16 @@ const surveyDataSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+       PostOffice: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+     Pincode: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     RationCardType: {
       type: String,
       trim: true,
@@ -37,6 +47,21 @@ const surveyDataSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    ToiletFacility: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    ToiletTankType: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+     ResidentialHouse: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     AvailabilityofCleanWater: {
       type: String,
       trim: true,
@@ -52,12 +77,32 @@ const surveyDataSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+     Gender: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     EducationalQualification: {
       type: String,
       trim: true,
       default: "",
     },
+    CurrentOccupation: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     BloodGroup: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+       LifestyleDisease: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+      EducationMainSubject: {
       type: String,
       trim: true,
       default: "",

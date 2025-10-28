@@ -27,11 +27,12 @@ const seniorCitizenSchema = new mongoose.Schema(
       minLength: 10,
       maxLength: 15,
     },
-    MarritalStatus: {
+ 
+    EducationalQualification: {
       type: String,
       trim: true,
     },
-    EducationalQualification: {
+     EducationMainSubject:{
       type: String,
       trim: true,
     },
@@ -143,7 +144,15 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-  },
+     LifestyleDisease:{
+       type: Boolean,
+      default: false,
+    },
+     LifestyleDiseaseType:{
+      type: String,
+      trim: true,
+    },
+    },
   { timestamps: true } // Adds createdAt and updatedAt fields
 );
 

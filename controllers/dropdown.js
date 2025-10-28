@@ -1,3 +1,4 @@
+import SurveyData from "../model/surveydata.js";
 import surveydata from "../model/surveydata.js";
 
 
@@ -304,4 +305,57 @@ export const typeOfWoodStove = async (req, res, next) => {
   }
 };
 
+export const ToiletFacility = async(req,res,next)=>{
+    try{
+        const list = await surveydata
+            .find({ ToiletFacility: { $nin: ["0", null, ""] } })
+            .select("ToiletFacility -_id")
+            .exec();
 
+        const ToiletFacility = list
+            .map(item => item.ToiletFacility?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueToiletFacility = [...new Set(ToiletFacility)].sort();
+         return res.status(200).json(uniqueToiletFacility);
+    } catch(error){
+        next(error.message);
+    }
+   
+}
+
+export const ToiletTankType = async(req,res,next)=>{
+    try{
+        const list = await surveydata
+            .find({ ToiletTankType: { $nin: ["0", null, ""] } })
+            .select("ToiletTankType -_id")
+            .exec();
+
+        const ToiletTankType = list
+            .map(item => item.ToiletTankType?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueToiletTankType = [...new Set(ToiletTankType)].sort();
+         return res.status(200).json(uniqueToiletTankType);
+    } catch(error){
+        next(error.message);
+    }
+    }
+
+export const ResidentialHouse = async(req,res,next)=>{
+    try{
+        const list = await surveydata
+            .find({ ResidentialHouse: { $nin: ["0", null, ""] } })
+            .select("ResidentialHouse -_id")
+            .exec();
+
+        const ResidentialHouse = list
+            .map(item => item.ResidentialHouse?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueResidentialHouse = [...new Set(ResidentialHouse)].sort();
+         return res.status(200).json(uniqueResidentialHouse);
+    } catch(error){
+        next(error.message);
+    }
+    }

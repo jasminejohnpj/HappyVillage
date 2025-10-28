@@ -13,7 +13,6 @@ import Supercitizen from '../model/superCitizen.js';
 export const registerUser = async (req, res, next) => {
   try {
     const { userName, mobile, password } = req.body;
-    console.log('register........');
     console.log(userName, mobile, password);
 
     const user = await Admin.findOne({ mobile });
@@ -43,7 +42,7 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res) => {
   try {
     const { mobile, password } = req.body;
-
+console.log("...");
     const user = await Admin.findOne({ mobile });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -95,8 +94,8 @@ export const submitSurveyForm = async (req, res, next) => {
     Noofpeopleworkings,
     RegularIncomePeople,
     MonthlyHouseholdIncome,
-    AreaofLand_Paddyland,
-    AreaofLand_Dryland,
+     Area_Paddyland,
+    Area_Dryland,
     CurrentCultivationDetails,
     ToiletFacilities,
     ToiletTankType,
@@ -247,6 +246,8 @@ export const addFamilyMembers = async (req, res, next) => {
       Age: member.Age,
       Gender: member.Gender,
       Relation: member.Relation,
+      Phone:member.Phone
+
     }));
 
     const savedMembers = await Family.insertMany(newFamilyMembers);

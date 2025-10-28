@@ -35,11 +35,12 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    MarritalStatus: {
+  
+    EducationalQualification: {
       type: String,
       trim: true,
     },
-    EducationalQualification: {
+     EducationMainSubject:{
       type: String,
       trim: true,
     },
@@ -87,7 +88,7 @@ const middleageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    AvgPersonalIncomeperMonth: {
+     AvgPersonalIncomeperMonth: {
       type: String,
       trim: true,
     },
@@ -123,6 +124,18 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    LifestyleDisease:{
+       type: Boolean,
+      default: false,
+    },
+     LifestyleDiseaseType:{
+      type: String,
+      trim: true,
+    },
+    GettingPension:{
+       type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true } // Enables createdAt and updatedAt
 );

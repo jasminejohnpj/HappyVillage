@@ -31,6 +31,10 @@ const superCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+     EducationMainSubject:{
+      type: String,
+      trim: true,
+    },
     CurrentlyWorking: {
       type: Boolean,
       default: false,
@@ -128,6 +132,14 @@ const superCitizenSchema = new mongoose.Schema(
       default: false,
     },
     MedicineDetails: {
+      type: String,
+      trim: true,
+    },
+     LifestyleDisease:{
+       type: Boolean,
+      default: false,
+    },
+     LifestyleDiseaseType:{
       type: String,
       trim: true,
     },

@@ -26,7 +26,7 @@ const surveyFormSchema = new mongoose.Schema(
       type: String,
       required: [true, "Post Office is required"],
       trim: true,
-      maxLength: 10,
+      maxLength: 100,
     },
     Pincode:{
       type: String,
@@ -44,10 +44,14 @@ const surveyFormSchema = new mongoose.Schema(
     HouseName: { type: String, trim: true, maxLength: 100 },
     HouseNo: { type: String, trim: true, maxLength: 20 },
     FamilymembersNO: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Family member count must be a number"],
-    },
+  type: Number,
+  required: true,
+  min: [1, "Family member count must be at least 1"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Family member count must be an integer"
+  }
+},
     RationCardType: { type: String, trim: true, maxLength: 50 },
     GasConnection: { type: Boolean, default: false },
     WoodStove: { type: Boolean, default: false },
@@ -58,43 +62,63 @@ const surveyFormSchema = new mongoose.Schema(
     HabitableHouse:{type: Boolean, default: false},
     TypeofHouse: { type: String, trim: true, maxLength: 50 },
     AreaofHouse: { type: String, trim: true, maxLength: 50 },
-     TwoWheeler:{
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"]
-    },
-     ThreeWheeler:{
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"]
-     },
-     FourWheeler:{
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"]
-     },
+     TwoWheeler: {
+  type: Number,
+  min: [0, "Number of vehicles cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Number of vehicles must be an integer"
+  }
+},
+ThreeWheeler: {
+  type: Number,
+  min: [0, "Number of vehicles cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Number of vehicles must be an integer"
+  }
+},
+FourWheeler: {
+  type: Number,
+  min: [0, "Number of vehicles cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Number of vehicles must be an integer"
+  }
+},
      Other:{
       type: String,
       trim: true,
       match: [/^\d+$/, "Number of vehicles must be a number"]
      },
-    Noofpeopleworkings: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Working people count must be a number"],
-    },
-    RegularIncomePeople:{
-      type:String, 
-      trim:true,
-       match: [/^\d+$/, "Number of vehicles must be a number"]
-    },
-    MonthlyHouseholdIncome:{ type: String,
-      trim: true,
-      match: [/^\d+$/, "Working people count must be a number"]
-    },
-   
-    AreaofLand_Paddyland: { type: String, trim: true, maxLength: 50 , allowNull: true},
-    AreaofLand_Dryland: { type: String, trim: true, maxLength: 50,allowNull: true },
+   Noofpeopleworkings: {
+  type: Number,
+  min: [0, "Working people count cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Working people count must be an integer"
+  }
+},
+
+RegularIncomePeople: {
+  type: Number,
+  min: [0, "Regular income people count cannot be negative"],
+  validate: {
+    validator: Number.isInteger,
+    message: "Regular income people count must be an integer"
+  }
+},
+
+MonthlyHouseholdIncome: {
+  type: Number,
+  min: [0, "Monthly household income cannot be negative"],
+  validate: {
+    validator: Number.isFinite,
+    message: "Monthly household income must be a valid number"
+  }
+},
+    Area_Paddyland: { type: String, trim: true, maxLength: 50 , allowNull: true},
+    Area_Dryland: { type: String, trim: true, maxLength: 50,allowNull: true },
     CurrentCultivationDetails: { type: String, trim: true, maxLength: 200,allowNull: true },
     ToiletFacilities: { type: Boolean, default: false },
     ToiletTankType:{ type: String, trim: true, maxLength: 100 },
