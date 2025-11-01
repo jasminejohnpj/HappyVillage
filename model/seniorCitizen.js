@@ -86,9 +86,16 @@ const seniorCitizenSchema = new mongoose.Schema(
       default: false,
     },
     PensionDetails: {
-      type: String,
-      trim: true,
+    type: [String],
+    default: [],
+    validate: {
+      validator: function (arr) {
+        // Ensure it's an array and contains no duplicates
+        return Array.isArray(arr) && new Set(arr).size === arr.length;
+      },
+      message: "Duplicate pension types are not allowed",
     },
+  },
     SocialWorkOrganaisations: {
       type: String,
       trim: true,

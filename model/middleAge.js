@@ -136,7 +136,18 @@ const middleageSchema = new mongoose.Schema(
     GettingPension:{
        type: Boolean,
       default: false,
-    }
+    },
+    PensionDetails: {
+    type: [String],
+    default: [],
+    validate: {
+      validator: function (arr) {
+        // Ensure it's an array and contains no duplicates
+        return Array.isArray(arr) && new Set(arr).size === arr.length;
+      },
+      message: "Duplicate pension types are not allowed",
+    },
+  },
   },
   { timestamps: true } // Enables createdAt and updatedAt
 );

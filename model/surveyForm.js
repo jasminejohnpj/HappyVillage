@@ -129,10 +129,28 @@ MonthlyHouseholdIncome: {
       trim: true,
       maxLength: 100,
     },
+    location: {
+  type: {
+    type: String,
+    enum: ["Point"],     // GeoJSON type — must always be "Point"
+    default: "Point",    // Default value when not provided
+  },
+  coordinates: {
+    type: [Number],       // Array of [longitude, latitude]
+    required: false,      // Optional, set true if mandatory
+    validate: {
+      validator: function (val) {
+        return !val || (val.length === 2 && val.every(v => typeof v === "number"));
+      },
+      message: "Coordinates must be an array of two numbers: [longitude, latitude]",
+    },
+  },
+},
+
   },
   { timestamps: true }
 );
-
+surveyFormSchema.index({ location: "2dsphere" });
 const SurveyForm = mongoose.model("SurveyForm", surveyFormSchema);
 
 export default SurveyForm;
