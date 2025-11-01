@@ -4,7 +4,7 @@ import {
     addMiddleage, addSeniorCitizen, addSuperCitizen, SurveyDetails, houseDetails, updateSurvey,
     familyDetails, updateNewborn, newbornDetails, updateChild, childDetails, youthDetails,
     updateYouth, middleageDetails, updateMiddleage, seniorCitizenDetails, updateSeniors,
-    superCitizenDetails, updateSuperCitizen
+    superCitizenDetails, updateSuperCitizen, PanchayathDetails
 } from "../controllers/user.js";
 const userRouter = express.Router();
 
@@ -51,6 +51,6 @@ userRouter.get('/getSuperCitizen', superCitizenDetails);
 userRouter.put('/updateSuperCitizen', updateSuperCitizen);
 
 
-
+userRouter.post('/PanchayathDetails', PanchayathDetails);
 
 export default userRouter;

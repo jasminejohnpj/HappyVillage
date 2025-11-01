@@ -22,6 +22,7 @@ const superCitizenSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
+      default: null
     },
     MarritalStatus: {
       type: String,

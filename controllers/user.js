@@ -642,7 +642,52 @@ export const updateSuperCitizen = async (req, res, next) => {
 
 
 
+export const PanchayathDetails = async (req, res, next) => {
+  try {
+    let { Panchayath, WardNo } = req.body;
 
+    if (!Panchayath || !WardNo) {
+      return res.status(400).json({ message: "Panchayath and WardNo are required" });
+    }
+
+    Panchayath = Panchayath.trim().toLowerCase();
+    WardNo = Number(WardNo);
+
+    let PostOffice = "";
+    let Village = "";
+    let Pincode = "";
+
+    if (Panchayath === "aryad" && [16, 17].includes(WardNo)) {
+      PostOffice = "Thumpoly";
+      Village = "Pathirappally";
+      Pincode = "688008";
+    } 
+    else if (Panchayath === "mararikulam south" && [16, 17].includes(WardNo)) {
+      PostOffice = "Katoor";
+      Village = "Kalavoor";
+      Pincode = "688522";
+    } 
+    else if (Panchayath === "mararikulam south" && [8, 9, 10, 11, 12, 13, 14, 15].includes(WardNo)) {
+      PostOffice = "Pathirappally";
+      Village = "Pathirappally";
+      Pincode = "688521";
+    } 
+    else {
+      return res.status(404).json({ message: "No matching Panchayath and WardNo found" });
+    }
+
+    return res.status(200).json({
+      Panchayath,
+      WardNo,
+      PostOffice,
+      Village,
+      Pincode
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 

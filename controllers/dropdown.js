@@ -206,23 +206,36 @@ export const getInorganicWasteManagementMethods = async (req, res, next) => {
 };
 
 export const getEducationalQualifications = async (req, res, next) => {
-    try {
-        const list = await surveydata
-            .find({ EducationalQualification: { $nin: ["0", null, ""] } })
-            .select("EducationalQualification -_id")
-            .exec();
+  try {
+    const { Age } = req.query;
 
-        const qualifications = list
-            .map(item => item.EducationalQualification?.trim())
-            .filter(q => q && q.length > 0);
+    const list = await surveydata
+      .find({ EducationalQualification: { $nin: ["0", null, ""] } })
+      .select("EducationalQualification -_id")
+      .lean();
 
-        const uniqueQualifications = [...new Set(qualifications)].sort();
+    // Extract all educational qualifications
+    let qualifications = list
+      .map(item => item.EducationalQualification?.trim())
+      .filter(Boolean); // removes "", null, undefined
 
-        return res.status(200).json(uniqueQualifications);
-    } catch (error) {
-        next(error.message);
+    // Apply age-based filtering
+    const ageNum = Number(Age);
+    if (!isNaN(ageNum) && ageNum >= 4 && ageNum <= 18) {
+      qualifications = qualifications.filter(
+        q => q !== "PG" && q !== "Other"
+      );
     }
+
+    const uniqueQualifications = [...new Set(qualifications)].sort();
+
+    return res.status(200).json(uniqueQualifications);
+  } catch (error) {
+    console.error("Error fetching EducationalQualification list:", error);
+    return res.status(500).json({ message: error.message });
+  }
 };
+
 
 export const getBloodGroups = async (req, res, next) => {
     try {
@@ -244,23 +257,34 @@ export const getBloodGroups = async (req, res, next) => {
 };
 
 export const getPensionDetails = async (req, res) => {
-    try {
-        const list = await surveydata
-            .find({ PensionDetails: { $nin: ["0", null, ""] } })
-            .select("PensionDetails -_id")
-            .exec();
+  try {
+    const { Age } = req.query;
 
-        const pensionDetails = list
-            .map(item => item.PensionDetails?.trim())
-            .filter(pd => pd && pd.length > 0);
+    const list = await surveydata
+      .find({ PensionDetails: { $nin: ["0", null, ""] } })
+      .select("PensionDetails -_id")
+      .lean();
 
-        const uniquePensionDetails = [...new Set(pensionDetails)].sort();
+    // Extract all pension details
+    let pensionDetails = list
+      .map(item => item.PensionDetails?.trim())
+      .filter(Boolean); // removes "", null, undefined
 
-        return res.status(200).json(uniquePensionDetails);
-    } catch (err) {
-        console.error("Error fetching PensionDetails:", err);
-        return res.status(500).json({ error: "Internal server error" });
+    // If age is provided and between 4–18 → remove EPF & Aaswasakiranam
+    const ageNum = Number(Age);
+    if (!isNaN(ageNum) && ageNum >= 4 && ageNum <= 18) {
+      pensionDetails = pensionDetails.filter(
+        pd => pd !== "EPF" && pd !== "Aaswasakiranam"
+      );
     }
+
+    const uniquePensionDetails = [...new Set(pensionDetails)].sort();
+
+    return res.status(200).json(uniquePensionDetails);
+  } catch (err) {
+    console.error("Error fetching PensionDetails:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 export const getMedicineDetails = async (req, res,next) => {
@@ -340,7 +364,7 @@ export const ToiletTankType = async(req,res,next)=>{
     } catch(error){
         next(error.message);
     }
-    }
+}
 
 export const ResidentialHouse = async(req,res,next)=>{
     try{
@@ -358,4 +382,100 @@ export const ResidentialHouse = async(req,res,next)=>{
     } catch(error){
         next(error.message);
     }
+}
+
+export const CurrentOccupation = async (req,res,next)=>{
+    try{
+         const list = await surveydata
+            .find({ CurrentOccupation: { $nin: ["0", null, ""] } })
+            .select("CurrentOccupation -_id")
+            .exec();
+
+        const CurrentOccupation = list
+            .map(item => item.CurrentOccupation?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueCurrentOccupation = [...new Set(CurrentOccupation)].sort();
+         return res.status(200).json(uniqueCurrentOccupation);
+    } catch(error){
+        next(error.message);
     }
+ }
+
+export const Gender = async(req,res, next)=>{
+    try{
+        const list = await surveydata
+            .find({ Gender: { $nin: ["0", null, ""] } })
+            .select("Gender -_id")
+            .exec();
+
+        const Gender = list
+            .map(item => item.Gender?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueGender = [...new Set(Gender)].sort();
+         return res.status(200).json(uniqueGender);
+    } catch(error){
+        next(error.message);
+    }
+}
+
+export const EducationMainSubject = async(req, res, next)=>{
+    try{
+         const list = await surveydata
+            .find({ EducationMainSubject: { $nin: ["0", null, ""] } })
+            .select("EducationMainSubject -_id")
+            .exec();
+
+        const EducationMainSubject = list
+            .map(item => item.EducationMainSubject?.trim())
+            .filter(pd => pd && pd.length > 0);
+
+        const uniqueEducationMainSubject = [...new Set(EducationMainSubject)].sort();
+         return res.status(200).json(uniqueEducationMainSubject);
+    } catch(error){
+        next(error.message);
+    }
+    }
+
+export const LifestyleDiseaseType = async (req, res, next) => {
+  try {
+    const list = await surveydata
+      .find({ LifestyleDiseaseType: { $nin: ["0", null, ""] } })
+      .select("LifestyleDiseaseType -_id")
+      .lean();
+
+    const diseaseTypes = list
+      .map(item => item.LifestyleDiseaseType?.trim())
+      .filter(Boolean); // removes "", null, undefined
+
+    const uniqueDiseaseTypes = [...new Set(diseaseTypes)].sort();
+
+    return res.status(200).json(uniqueDiseaseTypes);
+  } catch (error) {
+    next(error.message);
+
+  }
+};
+
+export const RelationshipWithFamily = async (req, res, next) => {
+  try {
+    const list = await surveydata
+      .find({ RelationshipWithFamily: { $nin: ["0", null, ""] } })
+      .select("RelationshipWithFamily -_id")
+      .lean();
+
+    const relationships = list
+      .map(item => item.RelationshipWithFamily?.trim())
+      .filter(Boolean); // filters "", null, undefined
+
+    const uniqueRelationships = [...new Set(relationships)].sort();
+
+    return res.status(200).json(uniqueRelationships);
+  } catch (error) {
+    console.error("Error fetching RelationshipWithFamily list:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+   

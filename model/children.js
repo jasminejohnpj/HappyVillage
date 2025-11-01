@@ -85,8 +85,8 @@ const ChildSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    MentalChallenges: {
-      type: Boolean,
+    PhysicalChallengesDetails: {
+      type: String,
       default: false,
     },
     ExamTensionMentalStress: {

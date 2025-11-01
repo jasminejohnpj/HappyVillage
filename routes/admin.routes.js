@@ -1,6 +1,6 @@
 import express from "express";
 import { registerSuperAdmin, loginSuperAdmin, allCounts, getWardNumbers, wardDetails , familyDetailsinWardwise,
-    houseDetails ,personalDetails, searchHouse , filterValues, PanchayathDetails
+    houseDetails ,personalDetails, searchHouse , filterValues, 
 } from "../controllers/admin.js";
 import { generateToken } from "../middleware/generatetoken.js";
 
@@ -17,6 +17,5 @@ adminRouter.get("/houseDetails", houseDetails);
 adminRouter.get("/personalDetails", personalDetails);
 adminRouter.get ('/searchHouse', searchHouse);
 adminRouter.get('/filterValues', filterValues);
-adminRouter.post('/PanchayathDetails', PanchayathDetails);
 export default adminRouter;
 

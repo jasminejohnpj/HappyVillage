@@ -22,6 +22,7 @@ const middleageSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
+      default: null
     },
     BloodGroup: {
       type: String,

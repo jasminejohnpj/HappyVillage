@@ -46,7 +46,7 @@ export const loginSuperAdmin = async (req, res, next) => {
 
     const admin = await superAdmin.findOne({ mobile });
     if (!admin) {
-      return res.status(401).json({ message: "admin not found" });
+      return res.status(404).json({ message: "admin not found" });
     }
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
@@ -107,15 +107,12 @@ export const loginSuperAdmin = async (req, res, next) => {
 
 export const allCounts = async (req, res, next) => {
   try {
-    // Get distinct Panchayaths from SurveyForm
     const panchayaths = await SurveyForm.distinct("Panchayath", {
       Panchayath: { $nin: ["0", null, ""] }
     });
 
-    // Build the result for each Panchayath
     const result = await Promise.all(
       panchayaths.map(async (panchayath) => {
-        // Find all documents for this Panchayath
         const records = await SurveyForm.find({ Panchayath: panchayath });
 
         const houseCount = records.length;
@@ -129,7 +126,7 @@ export const allCounts = async (req, res, next) => {
 
         if (name === "aryad") {
           wardCount = 2;
-        } else if (name === "maarikulam south") {
+        } else if (name === "mararikulam south") {
           wardCount = 10;
         }
 
@@ -162,7 +159,7 @@ export const getWardNumbers = async (req, res) => {
 
     if (Panchayath === "aryad") {
       wardNumbers = [16, 17];
-    } else if (Panchayath === "maarikulam south") {
+    } else if (Panchayath === "mararikulam south") {
       wardNumbers = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
     }
 
@@ -263,7 +260,6 @@ export const wardDetails = async (req, res, next) => {
       return res.status(400).json({ message: "Panchayath is required" });
     }
 
-    // 1️⃣ Get all survey forms for this Panchayath
     const surveyData = await SurveyForm.find({
       Panchayath: { $regex: new RegExp(`^${Panchayath}$`, "i") },
       WardNo: { $nin: [null, "", "0"] }
@@ -273,7 +269,6 @@ export const wardDetails = async (req, res, next) => {
       return res.status(404).json({ message: "No data found for this Panchayath" });
     }
 
-    // 2️⃣ Prepare ward-level stats
     const wardMap = {};
 
     surveyData.forEach((form) => {
@@ -294,11 +289,9 @@ export const wardDetails = async (req, res, next) => {
       wardMap[ward].surveyIds.push(form._id);
     });
 
-    // 3️⃣ Get all related family data (for gender counts)
     const allSurveyIds = surveyData.map((f) => f._id);
     const familyData = await Family.find({ Userid: { $in: allSurveyIds } });
 
-    // 4️⃣ Count gender stats per ward
     familyData.forEach((fam) => {
       const survey = surveyData.find((s) => String(s._id) === String(fam.Userid));
       if (!survey) return;
@@ -310,7 +303,6 @@ export const wardDetails = async (req, res, next) => {
       if (fam.Gender === "Female") wardMap[ward].femaleCount = (wardMap[ward].femaleCount || 0) + 1;
     });
 
-    // 5️⃣ Prepare sorted result
     const result = Object.values(wardMap).map((ward) => ({
       Panchayath: ward.Panchayath,
       WardNo: ward.WardNo,
@@ -323,7 +315,7 @@ export const wardDetails = async (req, res, next) => {
     return res.status(200).json(result);
 
   } catch (error) {
-    next(error);
+    next(error.message);
   }
 };
 
@@ -377,8 +369,7 @@ export const familyDetailsinWardwise = async (req, res, next) => {
     });
 
   } catch (error) {
-    console.error("Error fetching ward-wise family details:", error);
-    next(error);
+    next(error.message);
   }
 };
 
@@ -405,7 +396,7 @@ export const houseDetails = async (req, res, next) => {
     });
 
   } catch (error) {
-    next(error);
+    next(error.message);
   }
 };
 
@@ -437,7 +428,7 @@ export const personalDetails = async (req, res, next) => {
     }
 
     if (!info) {
-      return res.status(404).json({
+      return res.status(204).json({
         message: "No personal details found for the given Userid, Name, and Age range",
       });
     }
@@ -474,7 +465,7 @@ export const searchHouse = async (req, res, next) => {
       .lean();
 
     if (!result.length) {
-      return res.status(404).json({ message: "No data found for given Panchayath, WardNo, and keyvalue" });
+      return res.status(204).json({ message: "No data found for given Panchayath, WardNo, and keyvalue" });
     }
 
     const formatted = result.map(({ _id, ...rest }) => ({
@@ -515,51 +506,6 @@ export const filterValues = async(req, res, next)=>{
   }
 };
 
-export const PanchayathDetails = async (req, res, next) => {
-  try {
-    let { Panchayath, WardNo } = req.body;
 
-    if (!Panchayath || !WardNo) {
-      return res.status(400).json({ message: "Panchayath and WardNo are required" });
-    }
-
-    Panchayath = Panchayath.trim().toLowerCase();
-    WardNo = Number(WardNo);
-
-    let PostOffice = "";
-    let Village = "";
-    let Pincode = "";
-
-    if (Panchayath === "aryad" && [16, 17].includes(WardNo)) {
-      PostOffice = "Thumpoly";
-      Village = "Pathirappally";
-      Pincode = "688008";
-    } 
-    else if (Panchayath === "mararikulam south" && [16, 17].includes(WardNo)) {
-      PostOffice = "Katoor";
-      Village = "Kalavoor";
-      Pincode = "688522";
-    } 
-    else if (Panchayath === "mararikulam south" && [8, 9, 10, 11, 12, 13, 14, 15].includes(WardNo)) {
-      PostOffice = "Pathirappally";
-      Village = "Pathirappally";
-      Pincode = "688521";
-    } 
-    else {
-      return res.status(404).json({ message: "No matching Panchayath and WardNo found" });
-    }
-
-    return res.status(200).json({
-      Panchayath,
-      WardNo,
-      PostOffice,
-      Village,
-      Pincode
-    });
-
-  } catch (error) {
-    next(error);
-  }
-};
 
 

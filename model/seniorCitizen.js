@@ -26,6 +26,7 @@ const seniorCitizenSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
+      default: null
     },
  
     EducationalQualification: {
