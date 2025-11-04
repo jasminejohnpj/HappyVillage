@@ -151,6 +151,10 @@ const superCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    NRI: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true } // enables createdAt and updatedAt
 );

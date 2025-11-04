@@ -137,6 +137,10 @@ const middleageSchema = new mongoose.Schema(
        type: Boolean,
       default: false,
     },
+    NRI: {
+      type: Boolean,
+      default: false,
+    },
     PensionDetails: {
     type: [String],
     default: [],
