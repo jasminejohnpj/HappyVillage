@@ -574,6 +574,7 @@ export const updateSeniors = async (req, res, next) => {
   try {
     const { id } = req.query;
     const data = req.body;
+    
     if (!id) {
       return res.status(404).json({ message: 'id required' });
     }
@@ -581,8 +582,8 @@ export const updateSeniors = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: 'user not found' });
     }
-    await SeniorCitizen.findByIdAndUpdate(id, data);
-    return res.status(200).json({ message: 'data updated successfully', user });
+   const updatedUser = await SeniorCitizen.findByIdAndUpdate(id, data,{ new: true });
+    return res.status(200).json({ message: 'data updated successfully', updatedUser });
   } catch (error) {
     next(error.message);
   }
