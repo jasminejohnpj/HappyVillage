@@ -34,6 +34,12 @@ const familySchema = new mongoose.Schema(
       minLength: 10,
       maxLength: 15,
     },
+    otherRelationship:{
+      type:String,
+         trim: true,
+      minLength: 10,
+      maxLength: 15,
+    }
   },
   { timestamps: true }
 );

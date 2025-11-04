@@ -160,6 +160,10 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    NRI: {
+      type: Boolean,
+      default: false,
+    },
     },
   { timestamps: true } // Adds createdAt and updatedAt fields
 );
