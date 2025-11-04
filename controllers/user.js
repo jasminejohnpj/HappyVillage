@@ -548,23 +548,28 @@ export const addSeniorCitizen = async (req, res, next) => {
     next(error.message);
   }
 };
-
 export const seniorCitizenDetails = async (req, res, next) => {
   try {
     const { id } = req.query;
-    if (!id) {
-      returnres.status(404).json({ message: 'id is required' });
-    }
-    const user = await SeniorCitizen.findOne({ _id: id });
-    if (!user) {
-      return res.status(401).json({ message: 'user not found' });
-    }
-    return res.status(200).json({ message: 'data fetched successfully', user });
-  } catch (error) {
-    next(error.message);
-  }
-}
 
+    if (!id) {
+      return res.status(400).json({ message: "id is required" });
+    }
+
+    const user = await SeniorCitizen.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    return res.status(200).json({
+      message: "data fetched successfully",
+      user,
+    });
+  } catch (error) {
+    next(error); // pass the actual error object
+  }
+};
 export const updateSeniors = async (req, res, next) => {
   try {
     const { id } = req.query;
