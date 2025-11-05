@@ -134,10 +134,16 @@ const youthSchema = new mongoose.Schema(
        type: Boolean,
       default: false,
     },
-  LifestyleDiseaseType:{
-      type: String,
-      trim: true,
+LifestyleDiseaseType: {
+  type: [String],
+  default: [],
+  validate: {
+    validator: function (arr) {
+      return Array.isArray(arr) && new Set(arr).size === arr.length;
     },
+    message: "Duplicate disease types are not allowed",
+  },
+},
     GettingPension:{
        type: Boolean,
       default: false,

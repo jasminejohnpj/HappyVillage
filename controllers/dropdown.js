@@ -438,25 +438,30 @@ export const EducationMainSubject = async(req, res, next)=>{
     }
     }
 
-export const LifestyleDiseaseType = async (req, res, next) => {
+export const LifestyleDiseaseType = async (req, res) => {
   try {
     const list = await surveydata
-      .find({ LifestyleDiseaseType: { $nin: ["0", null, ""] } })
+      .find({ LifestyleDiseaseType: { $nin: [null, "", "0"] } })
       .select("LifestyleDiseaseType -_id")
       .lean();
 
-    const diseaseTypes = list
-      .map(item => item.LifestyleDiseaseType?.trim())
-      .filter(Boolean); // removes "", null, undefined
+    // Flatten arrays and clean up data
+    let diseaseTypes = list.flatMap(item => {
+      const value = item.LifestyleDiseaseType;
+      if (Array.isArray(value)) return value.map(v => v.trim());
+      return [value?.trim()];
+    }).filter(Boolean);
 
+    // Remove duplicates and sort alphabetically
     const uniqueDiseaseTypes = [...new Set(diseaseTypes)].sort();
 
     return res.status(200).json(uniqueDiseaseTypes);
-  } catch (error) {
-    next(error.message);
-
+  } catch (err) {
+    console.error("Error fetching LifestyleDiseaseType:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 export const RelationshipWithFamily = async (req, res, next) => {
   try {
