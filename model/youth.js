@@ -17,12 +17,12 @@ const youthSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-     Phone: {
+    Phone: {
       type: String,
       trim: true,
       minLength: 10,
       maxLength: 15,
-       default: null
+      default: null,
     },
     BloodGroup: {
       type: String,
@@ -44,20 +44,20 @@ const youthSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    OtherQualification:{
-       type: String,
+    OtherQualification: {
+      type: String,
       trim: true,
     },
-    
+
     CurrentlyStudying: {
       type: String,
       trim: true,
     },
-    OtherCourse:{
+    OtherCourse: {
       type: String,
       trim: true,
     },
-    EducationMainSubject:{
+    EducationMainSubject: {
       type: String,
       trim: true,
     },
@@ -122,47 +122,56 @@ const youthSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    PhysicalChallengesDetails: {
+      type: String,
+      trim: true,
+    },
+
     MentalChallenges: {
       type: Boolean,
       default: false,
     },
+    MentalChallengesDetails: {
+  type: String,
+  trim: true,
+},
     ExamTensionsorStress: {
       type: Boolean,
       default: false,
     },
-    LifestyleDisease:{
-       type: Boolean,
+    LifestyleDisease: {
+      type: Boolean,
       default: false,
     },
-LifestyleDiseaseType: {
-  type: [String],
-  default: [],
-  validate: {
-    validator: function (arr) {
-      return Array.isArray(arr) && new Set(arr).size === arr.length;
+    LifestyleDiseaseType: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate disease types are not allowed",
+      },
     },
-    message: "Duplicate disease types are not allowed",
-  },
-},
-    GettingPension:{
-       type: Boolean,
+    GettingPension: {
+      type: Boolean,
       default: false,
     },
     NRI: {
       type: Boolean,
       default: false,
     },
-     PensionDetails: {
-    type: [String],
-    default: [],
-    validate: {
-      validator: function (arr) {
-        // Ensure it's an array and contains no duplicates
-        return Array.isArray(arr) && new Set(arr).size === arr.length;
+    PensionDetails: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          // Ensure it's an array and contains no duplicates
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate pension types are not allowed",
       },
-      message: "Duplicate pension types are not allowed",
     },
-  },
   },
   { timestamps: true }
 );

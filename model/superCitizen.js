@@ -107,10 +107,19 @@ const superCitizenSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    PhysicalChallengesDetails: {
+  type: String,
+  trim: true,
+},
+
     MentalChallenges: {
       type: Boolean,
       default: false,
     },
+    MentalChallengesDetails: {
+  type: String,
+  trim: true,
+},
     FinancialLiability: {
       type: Boolean,
       default: false,
