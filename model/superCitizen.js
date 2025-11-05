@@ -22,7 +22,7 @@ const superCitizenSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
-      default: null
+      default: null,
     },
     MarritalStatus: {
       type: String,
@@ -32,7 +32,7 @@ const superCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-     EducationMainSubject:{
+    EducationMainSubject: {
       type: String,
       trim: true,
     },
@@ -81,16 +81,16 @@ const superCitizenSchema = new mongoose.Schema(
       default: false,
     },
     PensionDetails: {
-    type: [String],
-    default: [],
-    validate: {
-      validator: function (arr) {
-        // Ensure it's an array and contains no duplicates
-        return Array.isArray(arr) && new Set(arr).size === arr.length;
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          // Ensure it's an array and contains no duplicates
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate pension types are not allowed",
       },
-      message: "Duplicate pension types are not allowed",
     },
-  },
     SocialWorkOrganaisations: {
       type: String,
       trim: true,
@@ -143,13 +143,19 @@ const superCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-     LifestyleDisease:{
-       type: Boolean,
+    LifestyleDisease: {
+      type: Boolean,
       default: false,
     },
-     LifestyleDiseaseType:{
-      type: String,
-      trim: true,
+    LifestyleDiseaseType: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate disease types are not allowed",
+      },
     },
     NRI: {
       type: Boolean,

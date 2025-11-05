@@ -22,7 +22,7 @@ const middleageSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
-      default: null
+      default: null,
     },
     BloodGroup: {
       type: String,
@@ -36,12 +36,12 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-  
+
     EducationalQualification: {
       type: String,
       trim: true,
     },
-     EducationMainSubject:{
+    EducationMainSubject: {
       type: String,
       trim: true,
     },
@@ -89,7 +89,7 @@ const middleageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-     AvgPersonalIncomeperMonth: {
+    AvgPersonalIncomeperMonth: {
       type: String,
       trim: true,
     },
@@ -125,16 +125,22 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    LifestyleDisease:{
-       type: Boolean,
+    LifestyleDisease: {
+      type: Boolean,
       default: false,
     },
-     LifestyleDiseaseType:{
-      type: String,
-      trim: true,
+    LifestyleDiseaseType: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate disease types are not allowed",
+      },
     },
-    GettingPension:{
-       type: Boolean,
+    GettingPension: {
+      type: Boolean,
       default: false,
     },
     NRI: {
@@ -142,16 +148,16 @@ const middleageSchema = new mongoose.Schema(
       default: false,
     },
     PensionDetails: {
-    type: [String],
-    default: [],
-    validate: {
-      validator: function (arr) {
-        // Ensure it's an array and contains no duplicates
-        return Array.isArray(arr) && new Set(arr).size === arr.length;
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          // Ensure it's an array and contains no duplicates
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate pension types are not allowed",
       },
-      message: "Duplicate pension types are not allowed",
     },
-  },
   },
   { timestamps: true } // Enables createdAt and updatedAt
 );
