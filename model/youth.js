@@ -120,7 +120,7 @@ const youthSchema = new mongoose.Schema(
     },
 
     ExamTensionsorStress: {
-      type: Boolean,
+      type: Boolean,  
       default: false,
     },
        HasIllnessOrDisability: {
