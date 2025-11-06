@@ -22,13 +22,13 @@ const surveyFormSchema = new mongoose.Schema(
       trim: true,
       maxLength: 10,
     },
-    PostOffice:{
+    PostOffice: {
       type: String,
       required: [true, "Post Office is required"],
       trim: true,
       maxLength: 100,
     },
-    Pincode:{
+    Pincode: {
       type: String,
       required: [true, "Pin Code is required"],
       trim: true,
@@ -44,80 +44,90 @@ const surveyFormSchema = new mongoose.Schema(
     HouseName: { type: String, trim: true, maxLength: 100 },
     HouseNo: { type: String, trim: true, maxLength: 20 },
     FamilymembersNO: {
-  type: Number,
-  required: true,
-  min: [1, "Family member count must be at least 1"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Family member count must be an integer"
-  }
-},
+      type: Number,
+      required: true,
+      min: [1, "Family member count must be at least 1"],
+      validate: {
+        validator: Number.isInteger,
+        message: "Family member count must be an integer",
+      },
+    },
     RationCardType: { type: String, trim: true, maxLength: 50 },
     GasConnection: { type: Boolean, default: false },
     WoodStove: { type: Boolean, default: false },
     TypeofWoodStove: { type: String, trim: true, maxLength: 50 },
     Electricity: { type: Boolean, default: false },
     Solar: { type: Boolean, default: false },
-    ResidentialHouse:{type: String, trim: true, maxLength: 50},
-    HabitableHouse:{type: Boolean, default: false},
+    ResidentialHouse: { type: String, trim: true, maxLength: 50 },
+    HabitableHouse: { type: Boolean, default: false },
     TypeofHouse: { type: String, trim: true, maxLength: 50 },
     AreaofHouse: { type: String, trim: true, maxLength: 50 },
     Noofpeopleworkings: {
-  type: String,
-  trim: true,
-  match: [/^\d+$/, "Working people count must be a number"],
-  default: null
-},
-RegularIncomePeople: {
-  type: String,
-  trim: true,
-  match: [/^\d+$/, "Regular income people count must be a number"],
-  default: null
-},
-MonthlyHouseholdIncome: {
-  type: String,
-  trim: true,
-  match: [/^\d+$/, "Monthly household income must be a number"],
-  default: null
-},
-     Other:{
       type: String,
       trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"]
-     },
-   Noofpeopleworkings: {
-  type: Number,
-  min: [0, "Working people count cannot be negative"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Working people count must be an integer"
-  }
-},
+      match: [/^\d+$/, "Working people count must be a number"],
+      default: null,
+    },
+    RegularIncomePeople: {
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Regular income people count must be a number"],
+      default: null,
+    },
+    MonthlyHouseholdIncome: {
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Monthly household income must be a number"],
+      default: null,
+    },
+    Other: {
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Number of vehicles must be a number"],
+    },
+    Noofpeopleworkings: {
+      type: Number,
+      min: [0, "Working people count cannot be negative"],
+      validate: {
+        validator: Number.isInteger,
+        message: "Working people count must be an integer",
+      },
+    },
 
-RegularIncomePeople: {
-  type: Number,
-  min: [0, "Regular income people count cannot be negative"],
-  validate: {
-    validator: Number.isInteger,
-    message: "Regular income people count must be an integer"
-  }
-},
+    RegularIncomePeople: {
+      type: Number,
+      min: [0, "Regular income people count cannot be negative"],
+      validate: {
+        validator: Number.isInteger,
+        message: "Regular income people count must be an integer",
+      },
+    },
 
-MonthlyHouseholdIncome: {
-  type: Number,
-  min: [0, "Monthly household income cannot be negative"],
-  validate: {
-    validator: Number.isFinite,
-    message: "Monthly household income must be a valid number"
-  }
-},
-    Area_Paddyland: { type: String, trim: true, maxLength: 50 , allowNull: true},
-    Area_Dryland: { type: String, trim: true, maxLength: 50,allowNull: true },
-    CurrentCultivationDetails: { type: String, trim: true, maxLength: 200,allowNull: true },
+    MonthlyHouseholdIncome: {
+      type: Number,
+      min: [0, "Monthly household income cannot be negative"],
+      validate: {
+        validator: Number.isFinite,
+        message: "Monthly household income must be a valid number",
+      },
+    },
+    Area_Paddyland: {
+      type: String,
+      trim: true,
+      maxLength: 50,
+      allowNull: true,
+    },
+    Area_Dryland: { type: String, trim: true, maxLength: 50, allowNull: true },
+    CurrentCultivationDetails: {
+      type: String,
+      trim: true,
+      maxLength: 200,
+      allowNull: true,
+    },
     ToiletFacilities: { type: Boolean, default: false },
-    ToiletTankType:{ type: String, trim: true, maxLength: 100 },
+    ToiletTankType: { type: String, trim: true, maxLength: 100 },
     AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
-    KWAConnection:{ type: Boolean, default: false },
+    KWAConnection: { type: Boolean, default: false },
     OrganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
     InorganicWasteManagementMethod: {
       type: String,
@@ -129,24 +139,48 @@ MonthlyHouseholdIncome: {
       trim: true,
       maxLength: 100,
     },
-    location: {
+
+    SnehajalakamService: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+
+    SnehajalakamServiceDetails: {
+      type: [String],
+      enum: [
+        "Palliative Care",
+        "Janakiya Lab",
+        "Janakiya Pharmacy",
+        "Janakiya Bhakshanashala",
+        "Vidyajalakam",
+        "Sahayajalam",
+        "Snehabhavanam",
+      ],
+      default: [],
+    },
+location: {
   type: {
     type: String,
-    enum: ["Point"],     // GeoJSON type — must always be "Point"
-    default: "Point",    // Default value when not provided
+    enum: ["Point"],
+    default: "Point",
   },
   coordinates: {
-    type: [Number],       // Array of [longitude, latitude]
-    required: false,      // Optional, set true if mandatory
+    type: [Number],
+    default: [0, 0], // ✅ prevents “Point must be an array” error
     validate: {
       validator: function (val) {
-        return !val || (val.length === 2 && val.every(v => typeof v === "number"));
+        return (
+          Array.isArray(val) &&
+          val.length === 2 &&
+          val.every((v) => typeof v === "number")
+        );
       },
-      message: "Coordinates must be an array of two numbers: [longitude, latitude]",
+      message:
+        "Coordinates must be an array of two numbers: [longitude, latitude]",
     },
   },
 },
-
   },
   { timestamps: true }
 );

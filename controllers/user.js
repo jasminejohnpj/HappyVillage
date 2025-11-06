@@ -99,13 +99,38 @@ export const submitSurveyForm = async (req, res, next) => {
       OrganicWasteManagementMethod,
       InorganicWasteManagementMethod,
       OtherMethodInorganicWasteManagement,
+      SnehajalakamService,
+      SnehajalakamServiceDetails,
+      location, // allow location field if provided
     } = req.body;
 
-    const existingHouse = await SurveyForm.findOne({ HouseNo });
-    if (existingHouse) {
-      return res.status(400).json({ message: "The HouseNo already exists" });
+    // ✅ Basic validation
+    if (!Village || !Panchayath || !WardNo || !HouseholdHead) {
+      return res.status(400).json({
+        success: false,
+        message: "Village, Panchayath, WardNo, and HouseholdHead are required.",
+      });
     }
 
+    // ✅ Check for duplicate HouseNo
+    const existingHouse = await SurveyForm.findOne({ HouseNo });
+    if (existingHouse) {
+      return res.status(409).json({
+        success: false,
+        message: `House number '${HouseNo}' already exists.`,
+      });
+    }
+
+    // ✅ Ensure location has valid structure or set default
+    const safeLocation =
+      location &&
+      location.type === "Point" &&
+      Array.isArray(location.coordinates) &&
+      location.coordinates.length === 2
+        ? location
+        : { type: "Point", coordinates: [0, 0] };
+
+    // ✅ Create new document
     const newSurvey = new SurveyForm({
       Village,
       Panchayath,
@@ -143,16 +168,28 @@ export const submitSurveyForm = async (req, res, next) => {
       OrganicWasteManagementMethod,
       InorganicWasteManagementMethod,
       OtherMethodInorganicWasteManagement,
+      SnehajalakamService,
+      SnehajalakamServiceDetails,
+      location: safeLocation, // ✅ Prevents “Point must be an array” error
     });
 
+    // ✅ Save document
     await newSurvey.save();
 
-    return res.status(200).json({
+    return res.status(201).json({
+      success: true,
       message: "Survey data saved successfully",
       id: newSurvey._id,
     });
   } catch (error) {
-    next(error.message);
+    console.error("Error in submitSurveyForm:", error);
+
+    // ✅ Structured error response
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save survey data",
+      error: error.message || "Internal server error",
+    });
   }
 };
 
