@@ -65,8 +65,7 @@ const ChildSchema = new mongoose.Schema(
       trim: true,
       maxLength: 100,
     },
-    Otheroccupations:
-    {
+    Otheroccupations: {
       type: String,
       trim: true,
       maxLength: 100,
@@ -81,37 +80,41 @@ const ChildSchema = new mongoose.Schema(
       trim: true,
       maxLength: 200,
     },
-    PhysicalChallenges: {
-      type: Boolean,
-      default: false,
-    },
-    PhysicalChallengesDetails: {
-      type: String,
-      default: false,
-    },
+
     ExamTensionMentalStress: {
       type: Boolean,
       default: false,
     },
-    Vaccination:{
-       type: Boolean,
+    Vaccination: {
+      type: Boolean,
       default: false,
     },
-    GettingPension:{
-       type: Boolean,
+    HasIllnessOrDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    IllnessOrDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    PhysicalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasMentalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    MentalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    GettingPension: {
+      type: Boolean,
       default: false,
     },
-     PensionDetails: {
-    type: [String],
-    default: [],
-    validate: {
-      validator: function (arr) {
-        return Array.isArray(arr) && new Set(arr).size === arr.length;
+    PensionDetails: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate pension types are not allowed",
       },
-      message: "Duplicate pension types are not allowed",
     },
   },
-  },
+
   { timestamps: true }
 );
 

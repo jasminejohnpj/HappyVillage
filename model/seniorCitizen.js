@@ -26,14 +26,14 @@ const seniorCitizenSchema = new mongoose.Schema(
       trim: true,
       minLength: 10,
       maxLength: 15,
-      default: null
+      default: null,
     },
- 
+
     EducationalQualification: {
       type: String,
       trim: true,
     },
-     EducationMainSubject:{
+    EducationMainSubject: {
       type: String,
       trim: true,
     },
@@ -86,16 +86,16 @@ const seniorCitizenSchema = new mongoose.Schema(
       default: false,
     },
     PensionDetails: {
-    type: [String],
-    default: [],
-    validate: {
-      validator: function (arr) {
-        // Ensure it's an array and contains no duplicates
-        return Array.isArray(arr) && new Set(arr).size === arr.length;
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          // Ensure it's an array and contains no duplicates
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate pension types are not allowed",
       },
-      message: "Duplicate pension types are not allowed",
     },
-  },
     SocialWorkOrganaisations: {
       type: String,
       trim: true,
@@ -112,23 +112,7 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    PhysicalChallenges: {
-      type: Boolean,
-      default: false,
-    },
-    PhysicalChallengesDetails: {
-  type: String,
-  trim: true,
-},
 
-    MentalChallenges: {
-      type: Boolean,
-      default: false,
-    },
-    MentalChallengesDetails: {
-  type: String,
-  trim: true,
-},
     FinancialLiability: {
       type: Boolean,
       default: false,
@@ -157,29 +141,39 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    HasIllnessOrDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    IllnessOrDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    PhysicalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasMentalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    MentalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
     MedicineDetails: {
       type: String,
       trim: true,
     },
-     LifestyleDisease:{
-       type: Boolean,
+    LifestyleDisease: {
+      type: Boolean,
       default: false,
     },
-   LifestyleDiseaseType: {
-  type: [String],
-  default: [],
-  validate: {
-    validator: function (arr) {
-      return Array.isArray(arr) && new Set(arr).size === arr.length;
+    LifestyleDiseaseType: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate disease types are not allowed",
+      },
     },
-    message: "Duplicate disease types are not allowed",
-  },
-},
     NRI: {
       type: Boolean,
       default: false,
     },
-    },
+  },
   { timestamps: true } // Adds createdAt and updatedAt fields
 );
 
