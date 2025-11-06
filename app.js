@@ -28,6 +28,15 @@ app.get('/', (req, res) => {
   res.send("welcome....");
 });
 
+app.use((err, req, res, next) => {
+  console.error("Unhandled Error:", err);
+
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
 app.listen(PORT, async () => {
   console.log(`Happy village running on http://localhost:${PORT}`);
   await connectToDatabase();

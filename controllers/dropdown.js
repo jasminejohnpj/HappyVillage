@@ -484,3 +484,20 @@ export const RelationshipWithFamily = async (req, res, next) => {
 };
 
    
+export const getSnehajalakamServices = async (req, res, next) => {
+  try {
+    const services = [
+      "Palliative Care",
+      "Janakiya Lab",
+      "Janakiya Pharmacy",
+      "Janakiya Bhakshanashala",
+      "Vidyajalakam",
+      "Sahayajalam",
+      "Snehabhavanam"
+    ];
+
+    return res.status(200).json(services);
+  } catch (error) {
+    next(error.message);
+  }
+};
