@@ -77,6 +77,16 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    OtherKnownJobs: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate job names are not allowed",
+      },
+    },
     Unemployed: {
       type: Boolean,
       default: false,
