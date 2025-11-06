@@ -120,10 +120,10 @@ const youthSchema = new mongoose.Schema(
     },
 
     ExamTensionsorStress: {
-      type: Boolean,  
+      type: Boolean,
       default: false,
     },
-       HasIllnessOrDisability: {
+    HasIllnessOrDisability: {
       type: String,
       enum: ["Yes", "No"],
       default: "No",
@@ -154,6 +154,12 @@ const youthSchema = new mongoose.Schema(
     NRI: {
       type: Boolean,
       default: false,
+    },
+    LifeSatisfaction: {
+      type: String,
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent"],
+      default: "Good",
+      trim: true,
     },
     PensionDetails: {
       type: [String],

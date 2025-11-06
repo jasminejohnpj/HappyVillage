@@ -132,11 +132,17 @@ const superCitizenSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    LifeSatisfaction: {
+      type: String,
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent"],
+      default: "Good",
+      trim: true,
+    },
     MedicineDetails: {
       type: String,
       trim: true,
     },
-       HasIllnessOrDisability: {
+    HasIllnessOrDisability: {
       type: String,
       enum: ["Yes", "No"],
       default: "No",
