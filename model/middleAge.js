@@ -109,23 +109,7 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    PhysicalChallenges: {
-      type: Boolean,
-      default: false,
-    },
-    PhysicalChallengesDetails: {
-      type: String,
-      trim: true,
-    },
 
-    MentalChallenges: {
-      type: Boolean,
-      default: false,
-    },
-    MentalChallengesDetails: {
-  type: String,
-  trim: true,
-},
     FinancialLiability: {
       type: Boolean,
       default: false,
@@ -152,6 +136,16 @@ const middleageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    HasIllnessOrDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    IllnessOrDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    PhysicalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasMentalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    MentalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
     NRI: {
       type: Boolean,
       default: false,
