@@ -44,10 +44,20 @@ const newbornSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    Vaccination:{
-       type: Boolean,
+    HasIllnessOrDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    IllnessOrDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    PhysicalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    HasMentalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    MentalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    Vaccination: {
+      type: Boolean,
       default: false,
-    }
+    },
   },
   { timestamps: true }
 );
