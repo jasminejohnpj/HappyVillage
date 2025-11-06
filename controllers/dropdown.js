@@ -501,3 +501,13 @@ export const getSnehajalakamServices = async (req, res, next) => {
     next(error.message);
   }
 };
+
+
+export const getLifeSatisfactionLevels = async (req, res, next) => {
+  try {
+    const levels = ["Poor", "Fair", "Good", "Very Good", "Excellent"];
+    return res.status(200).json(levels);
+  } catch (error) {
+    next(error.message);
+  }
+};

@@ -133,6 +133,12 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    LifeSatisfaction: {
+      type: String,
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent"],
+      default: "Good",
+      trim: true,
+    },
     DepressionandStress: {
       type: Boolean,
       default: false,
@@ -140,6 +146,12 @@ const seniorCitizenSchema = new mongoose.Schema(
     RegularMedicine: {
       type: Boolean,
       default: false,
+    },
+    LifeSatisfaction: {
+      type: String,
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent"],
+      default: "Good",
+      trim: true,
     },
     HasIllnessOrDisability: {
       type: String,
