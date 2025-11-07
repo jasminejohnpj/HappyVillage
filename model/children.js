@@ -85,6 +85,10 @@ const ChildSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+       BloodGroup: {
+      type: String,
+      trim: true,
+    },
     Vaccination: {
       type: Boolean,
       default: false,
