@@ -118,12 +118,19 @@ const surveyFormSchema = new mongoose.Schema(
       allowNull: true,
     },
     Area_Dryland: { type: String, trim: true, maxLength: 50, allowNull: true },
+    Area_Wetland: {
+      type: String,
+      trim: true,
+      maxLength: 50,
+      allowNull: true,
+    },
     CurrentCultivationDetails: {
       type: String,
       trim: true,
       maxLength: 200,
       allowNull: true,
     },
+
     ToiletFacilities: { type: Boolean, default: false },
     ToiletTankType: { type: String, trim: true, maxLength: 100 },
     AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
@@ -159,28 +166,28 @@ const surveyFormSchema = new mongoose.Schema(
       ],
       default: [],
     },
-location: {
-  type: {
-    type: String,
-    enum: ["Point"],
-    default: "Point",
-  },
-  coordinates: {
-    type: [Number],
-    default: [0, 0], // ✅ prevents “Point must be an array” error
-    validate: {
-      validator: function (val) {
-        return (
-          Array.isArray(val) &&
-          val.length === 2 &&
-          val.every((v) => typeof v === "number")
-        );
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
       },
-      message:
-        "Coordinates must be an array of two numbers: [longitude, latitude]",
+      coordinates: {
+        type: [Number],
+        default: [0, 0], // ✅ prevents “Point must be an array” error
+        validate: {
+          validator: function (val) {
+            return (
+              Array.isArray(val) &&
+              val.length === 2 &&
+              val.every((v) => typeof v === "number")
+            );
+          },
+          message:
+            "Coordinates must be an array of two numbers: [longitude, latitude]",
+        },
+      },
     },
-  },
-},
   },
   { timestamps: true }
 );
