@@ -57,17 +57,16 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-        OtherKnownJobs: {
-  type: [String],
-  default: [],
-  validate: {
-    validator: function (arr) {
-      return Array.isArray(arr) && new Set(arr).size === arr.length;
+    OtherKnownJobs: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: function (arr) {
+          return Array.isArray(arr) && new Set(arr).size === arr.length;
+        },
+        message: "Duplicate job names are not allowed",
+      },
     },
-    message: "Duplicate job names are not allowed"
-  }
-}
-,
     Unemployed: {
       type: Boolean,
       default: false,
@@ -140,6 +139,12 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    MarritalStatus: {
+      type: String,
+      trim: true,
+      enum: ["Married", "UnMarried", "Widow", "Widower"],
+    },
+
     PalliativeTreatmentDetails: {
       type: String,
       trim: true,

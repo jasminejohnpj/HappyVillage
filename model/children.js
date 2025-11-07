@@ -89,6 +89,11 @@ const ChildSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    MarritalStatus: {
+      type: String,
+      trim: true,
+      enum: ["Married", "UnMarried", "Widow", "Widower"],
+    },
     HasIllnessOrDisability: {
       type: String,
       enum: ["Yes", "No"],
