@@ -43,6 +43,7 @@ const surveyFormSchema = new mongoose.Schema(
     },
     HouseName: { type: String, trim: true, maxLength: 100 },
     HouseNo: { type: String, trim: true, maxLength: 20 },
+
     FamilymembersNO: {
       type: Number,
       required: true,
@@ -52,6 +53,7 @@ const surveyFormSchema = new mongoose.Schema(
         message: "Family member count must be an integer",
       },
     },
+
     RationCardType: { type: String, trim: true, maxLength: 50 },
     GasConnection: { type: Boolean, default: false },
     WoodStove: { type: Boolean, default: false },
@@ -62,97 +64,50 @@ const surveyFormSchema = new mongoose.Schema(
     HabitableHouse: { type: Boolean, default: false },
     TypeofHouse: { type: String, trim: true, maxLength: 50 },
     AreaofHouse: { type: String, trim: true, maxLength: 50 },
-    Noofpeopleworkings: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Working people count must be a number"],
-      default: null,
-    },
-    RegularIncomePeople: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Regular income people count must be a number"],
-      default: null,
-    },
-    MonthlyHouseholdIncome: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Monthly household income must be a number"],
-      default: null,
-    },
-    Other: {
-      type: String,
-      trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"],
-    },
+
+    // ✅ Only keep number versions
     Noofpeopleworkings: {
       type: Number,
       min: [0, "Working people count cannot be negative"],
-      validate: {
-        validator: Number.isInteger,
-        message: "Working people count must be an integer",
-      },
+      default: 0,
     },
-
     RegularIncomePeople: {
       type: Number,
       min: [0, "Regular income people count cannot be negative"],
-      validate: {
-        validator: Number.isInteger,
-        message: "Regular income people count must be an integer",
-      },
+      default: 0,
     },
-
     MonthlyHouseholdIncome: {
       type: Number,
       min: [0, "Monthly household income cannot be negative"],
-      validate: {
-        validator: Number.isFinite,
-        message: "Monthly household income must be a valid number",
-      },
+      default: 0,
     },
-    Area_Paddyland: {
-      type: String,
-      trim: true,
-      maxLength: 50,
-      allowNull: true,
-    },
-    Area_Dryland: { type: String, trim: true, maxLength: 50, allowNull: true },
-    Area_Wetland: {
-      type: String,
-      trim: true,
-      maxLength: 50,
-      allowNull: true,
-    },
-    CurrentCultivationDetails: {
-      type: String,
-      trim: true,
-      maxLength: 200,
-      allowNull: true,
-    },
+
+    // ✅ Updated vehicle fields
+    NoofVehicles: { type: Number, default: 0 },
+    TwoWheeler: { type: Number, default: 0 },
+    ThreeWheeler: { type: Number, default: 0 },
+    FourWheeler: { type: Number, default: 0 },
+
+
+    Area_Paddyland: { type: String, trim: true, default: null },
+    Area_Dryland: { type: String, trim: true, default: null },
+    Area_Wetland: { type: String, trim: true, default: null },
+
+    CurrentCultivationDetails: { type: String, trim: true, default: null },
 
     ToiletFacilities: { type: Boolean, default: false },
     ToiletTankType: { type: String, trim: true, maxLength: 100 },
     AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
     KWAConnection: { type: Boolean, default: false },
     OrganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
-    InorganicWasteManagementMethod: {
-      type: String,
-      trim: true,
-      maxLength: 100,
-    },
-    OtherMethodInorganicWasteManagement: {
-      type: String,
-      trim: true,
-      maxLength: 100,
-    },
+    InorganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
+    OtherMethodInorganicWasteManagement: { type: String, trim: true, maxLength: 100 },
 
     SnehajalakamService: {
       type: String,
       enum: ["Yes", "No"],
       default: "No",
     },
-
     SnehajalakamServiceDetails: {
       type: [String],
       enum: [
@@ -166,6 +121,7 @@ const surveyFormSchema = new mongoose.Schema(
       ],
       default: [],
     },
+
     location: {
       type: {
         type: String,
@@ -174,7 +130,7 @@ const surveyFormSchema = new mongoose.Schema(
       },
       coordinates: {
         type: [Number],
-        default: [0, 0], // ✅ prevents “Point must be an array” error
+        default: [0, 0],
         validate: {
           validator: function (val) {
             return (
@@ -183,14 +139,14 @@ const surveyFormSchema = new mongoose.Schema(
               val.every((v) => typeof v === "number")
             );
           },
-          message:
-            "Coordinates must be an array of two numbers: [longitude, latitude]",
+          message: "Coordinates must be an array of two numbers: [longitude, latitude]",
         },
       },
     },
   },
   { timestamps: true }
 );
+
 surveyFormSchema.index({ location: "2dsphere" });
 const SurveyForm = mongoose.model("SurveyForm", surveyFormSchema);
 

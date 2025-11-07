@@ -79,16 +79,16 @@ export const submitSurveyForm = async (req, res, next) => {
       Electricity,
       Solar,
       ResidentialHouse,
+      HabitableHouse,
       TypeofHouse,
       AreaofHouse,
+      Noofpeopleworkings,
+      RegularIncomePeople,
+      MonthlyHouseholdIncome,
       NoofVehicles,
       TwoWheeler,
       ThreeWheeler,
       FourWheeler,
-      Other,
-      Noofpeopleworkings,
-      RegularIncomePeople,
-      MonthlyHouseholdIncome,
       Area_Paddyland,
       Area_Dryland,
       Area_Wetland,
@@ -102,27 +102,30 @@ export const submitSurveyForm = async (req, res, next) => {
       OtherMethodInorganicWasteManagement,
       SnehajalakamService,
       SnehajalakamServiceDetails,
-      location, // allow location field if provided
+      location,
     } = req.body;
 
     // ✅ Basic validation
     if (!Village || !Panchayath || !WardNo || !HouseholdHead) {
       return res.status(400).json({
         success: false,
-        message: "Village, Panchayath, WardNo, and HouseholdHead are required.",
+        message:
+          "Village, Panchayath, WardNo, and HouseholdHead are required fields.",
       });
     }
 
-    // ✅ Check for duplicate HouseNo
-    const existingHouse = await SurveyForm.findOne({ HouseNo });
-    if (existingHouse) {
-      return res.status(409).json({
-        success: false,
-        message: `House number '${HouseNo}' already exists.`,
-      });
+    // ✅ Prevent duplicate house numbers
+    if (HouseNo) {
+      const existingHouse = await SurveyForm.findOne({ HouseNo });
+      if (existingHouse) {
+        return res.status(409).json({
+          success: false,
+          message: `House number '${HouseNo}' already exists.`,
+        });
+      }
     }
 
-    // ✅ Ensure location has valid structure or set default
+    // ✅ Ensure safe location
     const safeLocation =
       location &&
       location.type === "Point" &&
@@ -131,7 +134,7 @@ export const submitSurveyForm = async (req, res, next) => {
         ? location
         : { type: "Point", coordinates: [0, 0] };
 
-    // ✅ Create new document
+    // ✅ Create new survey entry
     const newSurvey = new SurveyForm({
       Village,
       Panchayath,
@@ -149,16 +152,16 @@ export const submitSurveyForm = async (req, res, next) => {
       Electricity,
       Solar,
       ResidentialHouse,
+      HabitableHouse,
       TypeofHouse,
       AreaofHouse,
+      Noofpeopleworkings,
+      RegularIncomePeople,
+      MonthlyHouseholdIncome,
       NoofVehicles,
       TwoWheeler,
       ThreeWheeler,
       FourWheeler,
-      Other,
-      Noofpeopleworkings,
-      RegularIncomePeople,
-      MonthlyHouseholdIncome,
       Area_Paddyland,
       Area_Dryland,
       Area_Wetland,
@@ -172,21 +175,51 @@ export const submitSurveyForm = async (req, res, next) => {
       OtherMethodInorganicWasteManagement,
       SnehajalakamService,
       SnehajalakamServiceDetails,
-      location: safeLocation, // ✅ Prevents “Point must be an array” error
+      location: safeLocation,
     });
 
-    // ✅ Save document
-    await newSurvey.save();
+    // ✅ Save to DB
+    const savedSurvey = await newSurvey.save();
 
+    // ✅ Success Response
     return res.status(201).json({
       success: true,
-      message: "Survey data saved successfully",
-      id: newSurvey._id,
+      message: "Survey form submitted successfully",
+      data: {
+        _id: savedSurvey._id,
+        Village: savedSurvey.Village,
+        Panchayath: savedSurvey.Panchayath,
+        WardNo: savedSurvey.WardNo,
+        PostOffice: savedSurvey.PostOffice,
+        Pincode: savedSurvey.Pincode,
+        HouseholdHead: savedSurvey.HouseholdHead,
+        HouseNo: savedSurvey.HouseNo,
+        FamilymembersNO: savedSurvey.FamilymembersNO,
+        RationCardType: savedSurvey.RationCardType,
+        Electricity: savedSurvey.Electricity,
+        Solar: savedSurvey.Solar,
+        ResidentialHouse: savedSurvey.ResidentialHouse,
+        TypeofHouse: savedSurvey.TypeofHouse,
+        HabitableHouse: savedSurvey.HabitableHouse,
+        AreaofHouse: savedSurvey.AreaofHouse,
+        NoofVehicles: savedSurvey.NoofVehicles,
+        TwoWheeler: savedSurvey.TwoWheeler,
+        ThreeWheeler: savedSurvey.ThreeWheeler,
+        FourWheeler: savedSurvey.FourWheeler,
+        Area_Paddyland: savedSurvey.Area_Paddyland,
+        Area_Dryland: savedSurvey.Area_Dryland,
+        Area_Wetland: savedSurvey.Area_Wetland,
+        ToiletFacilities: savedSurvey.ToiletFacilities,
+        AvailabilityofCleanWater: savedSurvey.AvailabilityofCleanWater,
+        SnehajalakamService: savedSurvey.SnehajalakamService,
+        SnehajalakamServiceDetails: savedSurvey.SnehajalakamServiceDetails,
+        location: savedSurvey.location,
+        createdAt: savedSurvey.createdAt,
+      },
     });
   } catch (error) {
-    console.error("Error in submitSurveyForm:", error);
+    console.error("❌ Error in submitSurveyForm:", error);
 
-    // ✅ Structured error response
     return res.status(500).json({
       success: false,
       message: "Failed to save survey data",
@@ -194,6 +227,7 @@ export const submitSurveyForm = async (req, res, next) => {
     });
   }
 };
+
 
 export const SurveyDetails = async (req, res, next) => {
   try {
