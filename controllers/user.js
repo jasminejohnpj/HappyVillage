@@ -297,33 +297,63 @@ export const houseDetails = async (req, res, next) => {
   }
 };
 
+
+
 export const addFamilyMembers = async (req, res, next) => {
   try {
     const { Userid, FamilyMembers } = req.body;
 
-    if (!Array.isArray(FamilyMembers)) {
-      return res
-        .status(400)
-        .json({ message: "FamilyMembers must be an array" });
+    // ✅ Validate Userid
+    if (!Userid) {
+      return res.status(400).json({
+        success: false,
+        message: "Userid is required",
+      });
     }
 
+    // ✅ Validate FamilyMembers array
+    if (!FamilyMembers || !Array.isArray(FamilyMembers) || FamilyMembers.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "FamilyMembers must be a non-empty array",
+      });
+    }
+
+    // ✅ Prepare data
     const newFamilyMembers = FamilyMembers.map((member) => ({
       Userid,
-      Name: member.Name,
-      Age: member.Age,
-      Gender: member.Gender,
-      Relation: member.Relation,
-      Phone: member.Phone,
+      Name: member.Name?.trim(),
+      Age: member.Age?.toString(),
+      Gender: member.Gender?.trim(),
+      Relation: member.Relation?.trim(),
+      Phone: member.Phone || "",
+      otherRelationship: member.otherRelationship || "",
     }));
 
+    // ✅ Save all members
     const savedMembers = await Family.insertMany(newFamilyMembers);
 
-    return res.status(200).json({
-      message: "Family details updated successfully",
-      members: savedMembers,
+    return res.status(201).json({
+      success: true,
+      message: "Family members added successfully",
+      count: savedMembers.length,
+      members: savedMembers.map((m) => ({
+        id: m._id,
+        Name: m.Name,
+        Age: m.Age,
+        Gender: m.Gender,
+        Relation: m.Relation,
+        Phone: m.Phone,
+        otherRelationship: m.otherRelationship,
+      })),
     });
   } catch (error) {
-    next(error.message);
+    console.error("❌ Error adding family members:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add family members",
+      error: error.message || "Internal server error",
+    });
   }
 };
 
