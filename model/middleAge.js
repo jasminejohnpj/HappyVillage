@@ -134,6 +134,11 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    MarritalStatus: {
+  type: String,
+  trim: true,
+  enum: ["Married", "UnMarried", "Widow", "Widower"],
+},
     LifestyleDisease: {
       type: Boolean,
       default: false,

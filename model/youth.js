@@ -39,6 +39,7 @@ const youthSchema = new mongoose.Schema(
     MarritalStatus: {
       type: String,
       trim: true,
+      enum: ["Married", "UnMarried", "Widow", "Widower"],
     },
     EducationalQualification: {
       type: String,
