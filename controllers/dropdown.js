@@ -87,22 +87,27 @@ export const getRationCardTypes = async (req, res, next) => {
 
 
 export const getMaritalStatus = async (req, res, next) => {
-    try {
-        const list = await surveydata
-            .find({ MarritalStatus: { $nin: ["0", null, ""] } })
-            .select("MarritalStatus -_id")
-            .exec();
+  try {
+    // Default list of marital statuses as per schema enum
+    const maritalStatusList = [
+      "Married",
+      "UnMarried",
+      "Widow",
+      "Widower",
+    ];
 
-        const maritalStatus = list
-            .map(item => item.MarritalStatus?.trim())
-            .filter(status => status && status.length > 0);
-
-        const uniqueMaritalStatus = [...new Set(maritalStatus)].sort();
-
-        return res.status(200).json(uniqueMaritalStatus);
-    } catch (error) {
-        next(error.message);
-    }
+    return res.status(200).json({
+      success: true,
+      data: maritalStatusList,
+    });
+  } catch (error) {
+    console.error("Error fetching Marital Status:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch Marital Status options",
+      error: error.message,
+    });
+  }
 };
 
 
