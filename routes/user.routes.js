@@ -42,7 +42,7 @@ userRouter.get('/middleageDetails', middleageDetails);
 userRouter.put('/updateMiddleage', updateMiddleage);
 
 
-userRouter.post('/seriorCitizen', addSeniorCitizen);
+userRouter.post('/seniorCitizen', addSeniorCitizen);
 userRouter.get('/getSeniorCitizen', seniorCitizenDetails);
 userRouter.put('/updateSeniors', updateSeniors);
 
