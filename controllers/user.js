@@ -89,6 +89,7 @@ export const submitSurveyForm = async (req, res, next) => {
       TwoWheeler,
       ThreeWheeler,
       FourWheeler,
+      Other,
       Area_Paddyland,
       Area_Dryland,
       Area_Wetland,
@@ -103,6 +104,7 @@ export const submitSurveyForm = async (req, res, next) => {
       SnehajalakamService,
       SnehajalakamServiceDetails,
       location,
+ 
     } = req.body;
 
     // ✅ Basic validation
@@ -162,6 +164,7 @@ export const submitSurveyForm = async (req, res, next) => {
       TwoWheeler,
       ThreeWheeler,
       FourWheeler,
+      Other,
       Area_Paddyland,
       Area_Dryland,
       Area_Wetland,
@@ -206,6 +209,7 @@ export const submitSurveyForm = async (req, res, next) => {
         TwoWheeler: savedSurvey.TwoWheeler,
         ThreeWheeler: savedSurvey.ThreeWheeler,
         FourWheeler: savedSurvey.FourWheeler,
+        Other: savedSurvey.FourWheeler,
         Area_Paddyland: savedSurvey.Area_Paddyland,
         Area_Dryland: savedSurvey.Area_Dryland,
         Area_Wetland: savedSurvey.Area_Wetland,

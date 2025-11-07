@@ -87,6 +87,7 @@ const surveyFormSchema = new mongoose.Schema(
     TwoWheeler: { type: Number, default: 0 },
     ThreeWheeler: { type: Number, default: 0 },
     FourWheeler: { type: Number, default: 0 },
+    Other: { type: String, trim: true, match: [/^\d+$/, "Number of vehicles must be a number"], },
 
 
     Area_Paddyland: { type: String, trim: true, default: null },
