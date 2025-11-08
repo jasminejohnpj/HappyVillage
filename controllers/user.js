@@ -9,56 +9,160 @@ import Middleage from "../model/middleAge.js";
 import SeniorCitizen from "../model/seniorCitizen.js";
 import Supercitizen from "../model/superCitizen.js";
 
-export const registerUser = async (req, res, next) => {
+// ✅ Helper function to generate tokens
+const generateAccessAndRefreshToken = async (userId) => {
+  const user = await Admin.findById(userId);
+  if (!user) throw new Error("User not found");
+
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+
+  return { accessToken, refreshToken };
+};
+
+export const registerUser = async (req, res) => {
   try {
     const { userName, mobile, password } = req.body;
-    console.log(userName, mobile, password);
 
-    const user = await Admin.findOne({ mobile });
-    if (user) {
-      return res.status(409).json({ message: "User already exists" });
+    if (!userName || !mobile || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const existingUser = await Admin.findOne({ mobile });
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "User already exists",
+      });
+    }
 
-    const newUser = new Admin({
-      userName,
-      mobile,
-      password: hashedPassword,
-    });
+    const newUser = await Admin.create({ userName, mobile, password });
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(newUser._id);
 
-    await newUser.save();
+    const userData = {
+      id: newUser._id,
+      userName: newUser.userName,
+      mobile: newUser.mobile,
+    };
 
-    return res.status(200).json({
+    return res.status(201).json({
+      success: true,
       message: "User registered successfully",
-      newUser,
+      user: userData,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
-    next(error);
+    console.error("❌ Error in registerUser:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 
 export const loginUser = async (req, res) => {
   try {
     const { mobile, password } = req.body;
+
+    if (!mobile || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number and password are required",
+      });
+    }
+
     const user = await Admin.findOne({ mobile });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid password" });
+    const validPassword = await user.isPasswordCorrect(password);
+    if (!validPassword) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
     }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+
+    const userData = {
+      id: user._id,
+      userName: user.userName,
+      mobile: user.mobile,
+    };
 
     return res.status(200).json({
+      success: true,
       message: "Login successful",
-      user,
+      user: userData,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
-    next(error.message);
+    console.error("❌ Error in loginUser:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
+
+
+export const refreshAccessToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({
+        success: false,
+        message: "Refresh token required",
+      });
+    }
+
+    const user = await Admin.findOne({ refreshToken });
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid refresh token",
+      });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    if (!decoded) {
+      return res.status(403).json({
+        success: false,
+        message: "Expired or invalid refresh token",
+      });
+    }
+
+    const newAccessToken = user.generateAccessToken();
+
+    return res.status(200).json({
+      success: true,
+      message: "Access token refreshed successfully",
+      accessToken: newAccessToken,
+    });
+  } catch (error) {
+    console.error("❌ Error in refreshAccessToken:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
 
 export const submitSurveyForm = async (req, res, next) => {
   try {
@@ -104,7 +208,6 @@ export const submitSurveyForm = async (req, res, next) => {
       SnehajalakamService,
       SnehajalakamServiceDetails,
       location,
- 
     } = req.body;
 
     // ✅ Basic validation
@@ -232,7 +335,6 @@ export const submitSurveyForm = async (req, res, next) => {
   }
 };
 
-
 export const SurveyDetails = async (req, res, next) => {
   try {
     const survey = await SurveyForm.find({}, "HouseholdHead HouseName HouseNo");
@@ -297,8 +399,6 @@ export const houseDetails = async (req, res, next) => {
   }
 };
 
-
-
 export const addFamilyMembers = async (req, res, next) => {
   try {
     const { Userid, FamilyMembers } = req.body;
@@ -312,7 +412,11 @@ export const addFamilyMembers = async (req, res, next) => {
     }
 
     // ✅ Validate FamilyMembers array
-    if (!FamilyMembers || !Array.isArray(FamilyMembers) || FamilyMembers.length === 0) {
+    if (
+      !FamilyMembers ||
+      !Array.isArray(FamilyMembers) ||
+      FamilyMembers.length === 0
+    ) {
       return res.status(400).json({
         success: false,
         message: "FamilyMembers must be a non-empty array",

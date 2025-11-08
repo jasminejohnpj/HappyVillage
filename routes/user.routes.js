@@ -4,12 +4,14 @@ import {
     addMiddleage, addSeniorCitizen, addSuperCitizen, SurveyDetails, houseDetails, updateSurvey,
     familyDetails, updateNewborn, newbornDetails, updateChild, childDetails, youthDetails,
     updateYouth, middleageDetails, updateMiddleage, seniorCitizenDetails, updateSeniors,
-    superCitizenDetails, updateSuperCitizen, PanchayathDetails
+    superCitizenDetails, updateSuperCitizen, PanchayathDetails,
+    refreshAccessToken
 } from "../controllers/user.js";
 const userRouter = express.Router();
 
 userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
+userRouter.post("/refresh-token", refreshAccessToken);
 
 
 userRouter.post('/surveyForm', submitSurveyForm);
