@@ -164,7 +164,7 @@ export const refreshAccessToken = async (req, res) => {
 
 
 
-export const submitSurveyForm = async (req, res, next) => {
+export const submitSurveyForm = async (req, res) => {
   try {
     const {
       Village,
@@ -214,28 +214,19 @@ export const submitSurveyForm = async (req, res, next) => {
     if (!Village || !Panchayath || !WardNo || !HouseholdHead) {
       return res.status(400).json({
         success: false,
-        message:
-          "Village, Panchayath, WardNo, and HouseholdHead are required fields.",
+        message: "Village, Panchayath, WardNo, and HouseholdHead are required",
       });
     }
 
-    // ✅ Prevent duplicate house numbers
-    if (HouseNo) {
-      const existingHouse = await SurveyForm.findOne({ HouseNo });
-      if (existingHouse) {
-        return res.status(409).json({
-          success: false,
-          message: `House number '${HouseNo}' already exists.`,
-        });
-      }
+    // ✅ Ensure user is logged in
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // ✅ Ensure safe location
+    // ✅ Safe location
     const safeLocation =
-      location &&
-      location.type === "Point" &&
-      Array.isArray(location.coordinates) &&
-      location.coordinates.length === 2
+      location && location.type === "Point" && Array.isArray(location.coordinates)
         ? location
         : { type: "Point", coordinates: [0, 0] };
 
@@ -282,71 +273,62 @@ export const submitSurveyForm = async (req, res, next) => {
       SnehajalakamService,
       SnehajalakamServiceDetails,
       location: safeLocation,
+      createdBy: userId, // ✅ record who created this
     });
 
-    // ✅ Save to DB
-    const savedSurvey = await newSurvey.save();
+    await newSurvey.save();
 
-    // ✅ Success Response
     return res.status(201).json({
       success: true,
       message: "Survey form submitted successfully",
-      data: {
-        _id: savedSurvey._id,
-        Village: savedSurvey.Village,
-        Panchayath: savedSurvey.Panchayath,
-        WardNo: savedSurvey.WardNo,
-        PostOffice: savedSurvey.PostOffice,
-        Pincode: savedSurvey.Pincode,
-        HouseholdHead: savedSurvey.HouseholdHead,
-        HouseNo: savedSurvey.HouseNo,
-        FamilymembersNO: savedSurvey.FamilymembersNO,
-        RationCardType: savedSurvey.RationCardType,
-        Electricity: savedSurvey.Electricity,
-        Solar: savedSurvey.Solar,
-        ResidentialHouse: savedSurvey.ResidentialHouse,
-        TypeofHouse: savedSurvey.TypeofHouse,
-        HabitableHouse: savedSurvey.HabitableHouse,
-        AreaofHouse: savedSurvey.AreaofHouse,
-        NoofVehicles: savedSurvey.NoofVehicles,
-        TwoWheeler: savedSurvey.TwoWheeler,
-        ThreeWheeler: savedSurvey.ThreeWheeler,
-        FourWheeler: savedSurvey.FourWheeler,
-        Other: savedSurvey.FourWheeler,
-        Area_Paddyland: savedSurvey.Area_Paddyland,
-        Area_Dryland: savedSurvey.Area_Dryland,
-        Area_Wetland: savedSurvey.Area_Wetland,
-        ToiletFacilities: savedSurvey.ToiletFacilities,
-        AvailabilityofCleanWater: savedSurvey.AvailabilityofCleanWater,
-        SnehajalakamService: savedSurvey.SnehajalakamService,
-        SnehajalakamServiceDetails: savedSurvey.SnehajalakamServiceDetails,
-        location: savedSurvey.location,
-        createdAt: savedSurvey.createdAt,
-      },
+      data: newSurvey,
     });
   } catch (error) {
     console.error("❌ Error in submitSurveyForm:", error);
-
     return res.status(500).json({
       success: false,
       message: "Failed to save survey data",
-      error: error.message || "Internal server error",
     });
   }
 };
 
-export const SurveyDetails = async (req, res, next) => {
+// export const SurveyDetails = async (req, res, next) => {
+//   try {
+//     const survey = await SurveyForm.find({}, "HouseholdHead HouseName HouseNo");
+
+//     return res.status(200).json({
+//       message: "List of survey details",
+//       survey,
+//     });
+//   } catch (error) {
+//     next(error.message);
+//   }
+// };
+export const SurveyDetails = async (req, res) => {
   try {
-    const survey = await SurveyForm.find({}, "HouseholdHead HouseName HouseNo");
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const surveys = await SurveyForm.find({ createdBy: userId })
+      .select("Village Panchayath WardNo HouseholdHead HouseName HouseNo createdAt");
 
     return res.status(200).json({
-      message: "List of survey details",
-      survey,
+      success: true,
+      count: surveys.length,
+      surveys,
     });
   } catch (error) {
-    next(error.message);
+    console.error("❌ Error fetching user surveys:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch surveys",
+    });
   }
 };
+
 
 export const updateSurvey = async (req, res, next) => {
   try {
