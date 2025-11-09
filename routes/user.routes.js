@@ -1,58 +1,85 @@
-import express from 'express';
+import express from "express";
 import {
-    registerUser, loginUser, submitSurveyForm, addFamilyMembers, addNewborn, addChild, addYouth,
-    addMiddleage, addSeniorCitizen, addSuperCitizen, SurveyDetails, houseDetails, updateSurvey,
-    familyDetails, updateNewborn, newbornDetails, updateChild, childDetails, youthDetails,
-    updateYouth, middleageDetails, updateMiddleage, seniorCitizenDetails, updateSeniors,
-    superCitizenDetails, updateSuperCitizen, PanchayathDetails,
-    refreshAccessToken
+  registerUser,
+  loginUser,
+  refreshAccessToken,
+  submitSurveyForm,
+  SurveyDetails,
+  houseDetails,
+  updateSurvey,
+  addFamilyMembers,
+  familyDetails,
+  addNewborn,
+  updateNewborn,
+  newbornDetails,
+  addChild,
+  updateChild,
+  childDetails,
+  addYouth,
+  youthDetails,
+  updateYouth,
+  addMiddleage,
+  middleageDetails,
+  updateMiddleage,
+  addSeniorCitizen,
+  seniorCitizenDetails,
+  updateSeniors,
+  addSuperCitizen,
+  superCitizenDetails,
+  updateSuperCitizen,
+  PanchayathDetails,
 } from "../controllers/user.js";
+
+import { verifyJWT } from "../middleware/auth.middleware.js"
+
 const userRouter = express.Router();
 
-userRouter.post('/register', registerUser);
-userRouter.post('/login', loginUser);
+// ✅ Public routes (no login required)
+userRouter.post("/register", registerUser);
+userRouter.post("/login", loginUser);
 userRouter.post("/refresh-token", refreshAccessToken);
 
+//survay form
+userRouter.post("/surveyForm", verifyJWT, submitSurveyForm);
+userRouter.get("/listSurvey", verifyJWT, SurveyDetails);
+userRouter.get("/getSurvey", verifyJWT, houseDetails);
+userRouter.put("/updateSurvey", verifyJWT, updateSurvey);
 
-userRouter.post('/surveyForm', submitSurveyForm);
-userRouter.get('/listSurvey', SurveyDetails);
-userRouter.get('/getSurvey', houseDetails);
-userRouter.put('/updateSurvey', updateSurvey);
+// ✅ Family routes
+userRouter.post("/familyMembers", verifyJWT, addFamilyMembers);
+userRouter.get("/getFamily", verifyJWT, familyDetails);
 
+// ✅ Newborn routes
+userRouter.post("/newborn", verifyJWT, addNewborn);
+userRouter.put("/updateNewborn", verifyJWT, updateNewborn);
+userRouter.get("/getNewborn", verifyJWT, newbornDetails);
 
-userRouter.post('/familyMembers', addFamilyMembers);
-userRouter.get('/getFamily', familyDetails);
+// ✅ Children routes
+userRouter.post("/children", verifyJWT, addChild);
+userRouter.put("/updateChild", verifyJWT, updateChild);
+userRouter.get("/getChild", verifyJWT, childDetails);
 
+// ✅ Youth routes
+userRouter.post("/youth", verifyJWT, addYouth);
+userRouter.get("/youthDetails", verifyJWT, youthDetails);
+userRouter.put("/updateYouth", verifyJWT, updateYouth);
 
-userRouter.post('/newborn', addNewborn);
-userRouter.put('/updateNewborn', updateNewborn);
-userRouter.get('/getNewborn', newbornDetails);
+// ✅ Middle Age routes
+userRouter.post("/middleage", verifyJWT, addMiddleage);
+userRouter.get("/middleageDetails", verifyJWT, middleageDetails);
+userRouter.put("/updateMiddleage", verifyJWT, updateMiddleage);
 
+// ✅ Senior Citizen routes
+userRouter.post("/seniorCitizen", verifyJWT, addSeniorCitizen);
+userRouter.get("/getSeniorCitizen", verifyJWT, seniorCitizenDetails);
+userRouter.put("/updateSeniors", verifyJWT, updateSeniors);
 
-userRouter.post('/children', addChild);
-userRouter.put('/updateChild', updateChild);
-userRouter.get('/getChild', childDetails);
+// ✅ Super Citizen routes
+userRouter.post("/superCitizen", verifyJWT, addSuperCitizen);
+userRouter.get("/getSuperCitizen", verifyJWT, superCitizenDetails);
+userRouter.put("/updateSuperCitizen", verifyJWT, updateSuperCitizen);
 
-
-userRouter.post('/youth', addYouth);
-userRouter.get('/youthDetails', youthDetails);
-userRouter.put('/updateYouth', updateYouth);
-
-
-userRouter.post('/middleage', addMiddleage);
-userRouter.get('/middleageDetails', middleageDetails);
-userRouter.put('/updateMiddleage', updateMiddleage);
-
-
-userRouter.post('/seniorCitizen', addSeniorCitizen);
-userRouter.get('/getSeniorCitizen', seniorCitizenDetails);
-userRouter.put('/updateSeniors', updateSeniors);
-
-userRouter.post('/superCitizen', addSuperCitizen);
-userRouter.get('/getSuperCitizen', superCitizenDetails);
-userRouter.put('/updateSuperCitizen', updateSuperCitizen);
-
-
-userRouter.post('/PanchayathDetails', PanchayathDetails);
+// ✅ Panchayath details (public or restricted based on your choice)
+userRouter.post("/PanchayathDetails", verifyJWT, PanchayathDetails);
 
 export default userRouter;

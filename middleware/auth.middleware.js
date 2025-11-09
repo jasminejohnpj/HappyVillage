@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Admin from "../model/admin";
+import Admin from "../model/admin.js";
 
 export const verifyJWT = async (req, res, next) => {
   try {
@@ -8,7 +8,7 @@ export const verifyJWT = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized: Token missing",
+        message: "Unauthorized: Token missing or invalid format",
       });
     }
 
@@ -23,7 +23,7 @@ export const verifyJWT = async (req, res, next) => {
       });
     }
 
-    req.user = user;
+    req.user = user; // ✅ attach logged-in user
     next();
   } catch (error) {
     console.error("❌ Token verification error:", error.message);

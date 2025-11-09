@@ -87,8 +87,11 @@ const surveyFormSchema = new mongoose.Schema(
     TwoWheeler: { type: Number, default: 0 },
     ThreeWheeler: { type: Number, default: 0 },
     FourWheeler: { type: Number, default: 0 },
-    Other: { type: String, trim: true, match: [/^\d+$/, "Number of vehicles must be a number"], },
-
+    Other: {
+      type: String,
+      trim: true,
+      match: [/^\d+$/, "Number of vehicles must be a number"],
+    },
 
     Area_Paddyland: { type: String, trim: true, default: null },
     Area_Dryland: { type: String, trim: true, default: null },
@@ -101,8 +104,16 @@ const surveyFormSchema = new mongoose.Schema(
     AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
     KWAConnection: { type: Boolean, default: false },
     OrganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
-    InorganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
-    OtherMethodInorganicWasteManagement: { type: String, trim: true, maxLength: 100 },
+    InorganicWasteManagementMethod: {
+      type: String,
+      trim: true,
+      maxLength: 100,
+    },
+    OtherMethodInorganicWasteManagement: {
+      type: String,
+      trim: true,
+      maxLength: 100,
+    },
 
     SnehajalakamService: {
       type: String,
@@ -123,6 +134,12 @@ const surveyFormSchema = new mongoose.Schema(
       default: [],
     },
 
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+      required: true,
+    },
+
     location: {
       type: {
         type: String,
@@ -140,7 +157,8 @@ const surveyFormSchema = new mongoose.Schema(
               val.every((v) => typeof v === "number")
             );
           },
-          message: "Coordinates must be an array of two numbers: [longitude, latitude]",
+          message:
+            "Coordinates must be an array of two numbers: [longitude, latitude]",
         },
       },
     },
