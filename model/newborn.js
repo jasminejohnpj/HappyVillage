@@ -6,13 +6,17 @@ const newbornSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SurveyForm",
       required: [true, "User ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Userid: ${props.value}`,
+      },
     },
     Name: {
       type: String,
       required: [true, "Name is required"],
       trim: true,
-      minLength: 2,
-      maxLength: 50,
+      minLength: [2, "Name must be at least 2 characters"],
+      maxLength: [50, "Name cannot exceed 50 characters"],
     },
     Dob: {
       type: String,
@@ -22,23 +26,32 @@ const newbornSchema = new mongoose.Schema(
     Father: {
       type: String,
       trim: true,
-      maxLength: 50,
+      maxLength: [50, "Father name too long"],
+      default: "",
     },
     Mother: {
       type: String,
       trim: true,
-      maxLength: 50,
+      maxLength: [50, "Mother name too long"],
+      default: "",
     },
     Phone: {
       type: String,
       trim: true,
-      minLength: 10,
-      maxLength: 15,
+      validate: {
+        validator: function (v) {
+          // Allow empty OR valid number
+          return !v || /^[0-9]{10,15}$/.test(v);
+        },
+        message: "Phone must be 10–15 digits or empty",
+      },
+      default: "",
     },
     Guardian: {
       type: String,
       trim: true,
-      maxLength: 50,
+      maxLength: [50, "Guardian name too long"],
+      default: "",
     },
     CurrentHealthIssues: {
       type: Boolean,
@@ -49,11 +62,34 @@ const newbornSchema = new mongoose.Schema(
       enum: ["Yes", "No"],
       default: "No",
     },
-    IllnessOrDisabilityDetails: { type: String, trim: true, maxLength: 200 },
-    HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
-    PhysicalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
-    HasMentalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
-    MentalDisabilityDetails: { type: String, trim: true, maxLength: 200 },
+    IllnessOrDisabilityDetails: {
+      type: String,
+      trim: true,
+      maxLength: [200, "Details too long"],
+      default: "",
+    },
+    HasPhysicalDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    PhysicalDisabilityDetails: {
+      type: String,
+      trim: true,
+      maxLength: [200, "Details too long"],
+      default: "",
+    },
+    HasMentalDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
+    MentalDisabilityDetails: {
+      type: String,
+      trim: true,
+      maxLength: [200, "Details too long"],
+      default: "",
+    },
     Vaccination: {
       type: Boolean,
       default: false,
@@ -62,6 +98,13 @@ const newbornSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Newborn = mongoose.model("Newborn", newbornSchema);
+// 🧠 Prevent crash from invalid ID before validation
+newbornSchema.pre("validate", function (next) {
+  if (!mongoose.Types.ObjectId.isValid(this.Userid)) {
+    this.invalidate("Userid", `Invalid ObjectId format: ${this.Userid}`);
+  }
+  next();
+});
 
+const      Newborn = mongoose.model("Newborn", newbornSchema);
 export default Newborn;

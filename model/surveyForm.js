@@ -41,8 +41,8 @@ const surveyFormSchema = new mongoose.Schema(
       minLength: 2,
       maxLength: 100,
     },
-    HouseName: { type: String, trim: true, maxLength: 100 },
-    HouseNo: { type: String, trim: true, maxLength: 20 },
+    HouseName: { type: String, trim: true, default: "" },
+    HouseNo: { type: String, trim: true, default: "" },
 
     FamilymembersNO: {
       type: Number,
@@ -54,35 +54,20 @@ const surveyFormSchema = new mongoose.Schema(
       },
     },
 
-    RationCardType: { type: String, trim: true, maxLength: 50 },
+    RationCardType: { type: String, trim: true, default: "" },
     GasConnection: { type: Boolean, default: false },
     WoodStove: { type: Boolean, default: false },
-    TypeofWoodStove: { type: String, trim: true, maxLength: 50 },
+    TypeofWoodStove: { type: String, trim: true, default: "" },
     Electricity: { type: Boolean, default: false },
     Solar: { type: Boolean, default: false },
-    ResidentialHouse: { type: String, trim: true, maxLength: 50 },
+    ResidentialHouse: { type: String, trim: true, default: "" },
     HabitableHouse: { type: Boolean, default: false },
-    TypeofHouse: { type: String, trim: true, maxLength: 50 },
-    AreaofHouse: { type: String, trim: true, maxLength: 50 },
+    TypeofHouse: { type: String, trim: true, default: "" },
+    AreaofHouse: { type: String, trim: true, default: "" },
 
-    // ✅ Only keep number versions
-    Noofpeopleworkings: {
-      type: Number,
-      min: [0, "Working people count cannot be negative"],
-      default: 0,
-    },
-    RegularIncomePeople: {
-      type: Number,
-      min: [0, "Regular income people count cannot be negative"],
-      default: 0,
-    },
-    MonthlyHouseholdIncome: {
-      type: Number,
-      min: [0, "Monthly household income cannot be negative"],
-      default: 0,
-    },
-
-    // ✅ Updated vehicle fields
+    Noofpeopleworkings: { type: Number, min: 0, default: 0 },
+    RegularIncomePeople: { type: Number, min: 0, default: 0 },
+    MonthlyHouseholdIncome: { type: Number, min: 0, default: 0 },
     NoofVehicles: { type: Number, default: 0 },
     TwoWheeler: { type: Number, default: 0 },
     ThreeWheeler: { type: Number, default: 0 },
@@ -90,36 +75,27 @@ const surveyFormSchema = new mongoose.Schema(
     Other: {
       type: String,
       trim: true,
-      match: [/^\d+$/, "Number of vehicles must be a number"],
+      default: "",
+      validate: {
+        validator: (v) => !v || /^\d+$/.test(v),
+        message: "Number of vehicles must be a number",
+      },
     },
 
-    Area_Paddyland: { type: String, trim: true, default: null },
-    Area_Dryland: { type: String, trim: true, default: null },
-    Area_Wetland: { type: String, trim: true, default: null },
-
-    CurrentCultivationDetails: { type: String, trim: true, default: null },
+    Area_Paddyland: { type: String, trim: true, default: "" },
+    Area_Dryland: { type: String, trim: true, default: "" },
+    Area_Wetland: { type: String, trim: true, default: "" },
+    CurrentCultivationDetails: { type: String, trim: true, default: "" },
 
     ToiletFacilities: { type: Boolean, default: false },
-    ToiletTankType: { type: String, trim: true, maxLength: 100 },
-    AvailabilityofCleanWater: { type: String, trim: true, maxLength: 100 },
+    ToiletTankType: { type: String, trim: true, default: "" },
+    AvailabilityofCleanWater: { type: String, trim: true, default: "" },
     KWAConnection: { type: Boolean, default: false },
-    OrganicWasteManagementMethod: { type: String, trim: true, maxLength: 100 },
-    InorganicWasteManagementMethod: {
-      type: String,
-      trim: true,
-      maxLength: 100,
-    },
-    OtherMethodInorganicWasteManagement: {
-      type: String,
-      trim: true,
-      maxLength: 100,
-    },
+    OrganicWasteManagementMethod: { type: String, trim: true, default: "" },
+    InorganicWasteManagementMethod: { type: String, trim: true, default: "" },
+    OtherMethodInorganicWasteManagement: { type: String, trim: true, default: "" },
 
-    SnehajalakamService: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
+    SnehajalakamService: { type: String, enum: ["Yes", "No"], default: "No" },
     SnehajalakamServiceDetails: {
       type: [String],
       enum: [
@@ -138,6 +114,10 @@ const surveyFormSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
       required: true,
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Admin ID: ${props.value}`,
+      },
     },
 
     location: {
@@ -150,15 +130,11 @@ const surveyFormSchema = new mongoose.Schema(
         type: [Number],
         default: [0, 0],
         validate: {
-          validator: function (val) {
-            return (
-              Array.isArray(val) &&
-              val.length === 2 &&
-              val.every((v) => typeof v === "number")
-            );
-          },
-          message:
-            "Coordinates must be an array of two numbers: [longitude, latitude]",
+          validator: (val) =>
+            Array.isArray(val) &&
+            val.length === 2 &&
+            val.every((v) => typeof v === "number"),
+          message: "Coordinates must be [longitude, latitude]",
         },
       },
     },
@@ -166,7 +142,14 @@ const surveyFormSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-surveyFormSchema.index({ location: "2dsphere" });
-const SurveyForm = mongoose.model("SurveyForm", surveyFormSchema);
+surveyFormSchema.pre("validate", function (next) {
+  if (!mongoose.Types.ObjectId.isValid(this.createdBy)) {
+    this.invalidate("createdBy", `Invalid ObjectId format: ${this.createdBy}`);
+  }
+  next();
+});
 
+surveyFormSchema.index({ location: "2dsphere" });
+
+const SurveyForm = mongoose.model("SurveyForm", surveyFormSchema);
 export default SurveyForm;
