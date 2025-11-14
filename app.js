@@ -37,9 +37,16 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, async () => {
-  console.log(`Happy village running on http://localhost:${PORT}`);
-  await connectToDatabase();
-});
+// ✅ FIXED ORDER: Connect first, then start server
+connectToDatabase()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Happy Village running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Failed to connect to MongoDB:", err);
+    process.exit(1); // exit if DB fails
+  });
 
 export default app;
