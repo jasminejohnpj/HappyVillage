@@ -428,7 +428,7 @@ export const personalDetails = async (req, res, next) => {
     }
 
     if (!info) {
-      return res.status(204).json({
+      return res.status(404).json({
         message: "No personal details found for the given Userid, Name, and Age range",
       });
     }

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
@@ -29,6 +29,14 @@ const adminSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minLength: 6,
     },
+    surveys:{
+      type:[
+        {
+          type:Schema.Types.ObjectId,ref:"SurveyForm"
+        }
+      ]
+    }
+    ,
     refreshToken: { type: String, default: null },
   },
   { timestamps: true }

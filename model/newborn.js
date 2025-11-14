@@ -11,6 +11,15 @@ const newbornSchema = new mongoose.Schema(
         message: (props) => `Invalid Userid: ${props.value}`,
       },
     },
+    Familymemberid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Family",
+      required: [true, "Family ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Family: ${props.value}`,
+      },
+    },
     Name: {
       type: String,
       required: [true, "Name is required"],
@@ -106,5 +115,5 @@ newbornSchema.pre("validate", function (next) {
   next();
 });
 
-const      Newborn = mongoose.model("Newborn", newbornSchema);
+const Newborn = mongoose.model("Newborn", newbornSchema);
 export default Newborn;
