@@ -79,7 +79,7 @@ export const loginUser = async (req, res) => {
   try {
     const { mobile, password } = req.body;
 
-    console.log(req.body)
+  
 
     if (!mobile || !password) {
       return res.status(400).json({
@@ -220,9 +220,10 @@ export const SurveyDetails = async (req, res) => {
     if (!userId)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const surveys = await SurveyForm.find({ createdBy: userId }).select(
-      "Village Panchayath WardNo HouseholdHead HouseName HouseNo createdAt"
-    );
+    // ✅ Fetch and sort by createdAt (newest first)
+    const surveys = await SurveyForm.find({ createdBy: userId })
+      .select("Village Panchayath WardNo HouseholdHead HouseName HouseNo createdAt")
+      .sort({ createdAt: -1 }); // 🔽 -1 = descending order (latest first)
 
     return res.status(200).json({
       success: true,
@@ -236,7 +237,6 @@ export const SurveyDetails = async (req, res) => {
       .json({ success: false, message: "Failed to fetch surveys" });
   }
 };
-
 export const updateSurvey = async (req, res, next) => {
   try {
     const { id, ...data } = req.body;
@@ -287,12 +287,14 @@ export const houseDetails = async (req, res, next) => {
 export const addFamilyMembers = async (req, res) => {
   try {
     const { Userid, FamilyMembers } = req.body;
+  
 
     if (!Userid || !isValidObjectId(Userid)) {
       return res
         .status(400)
         .json({ success: false, message: "Valid Userid is required" });
     }
+
 
     if (!Array.isArray(FamilyMembers) || FamilyMembers.length === 0) {
       return res.status(400).json({
@@ -345,7 +347,7 @@ export const familyDetails = async (req, res, next) => {
       return res.status(400).json({ message: "Valid Userid required" });
 
     const family = await Family.find({ Userid });
-    console.log(family,"family")
+
     if (!family || family.length === 0)
       return res.status(404).json({ message: "No family members found" });
 
@@ -366,30 +368,32 @@ export const addNewborn = async (req, res, next) => {
   try {
     const data = req.body;
 
-    if (!data || Object.keys(data).length === 0) {
+    if (!data || Object.keys(data).length === 0)
       return res.status(400).json({ message: "Invalid request body" });
-    }
 
-    // Validate required fields for newborn (Userid, Name, Dob)
-    if (!data.Userid || !isValidObjectId(data.Userid)) {
+    // ✅ Validate required fields
+    if (!data.Userid || !isValidObjectId(data.Userid))
       return res.status(400).json({ message: "Valid Userid is required" });
-    }
-    if (!data.Name) {
-      return res.status(400).json({ message: "Name is required" });
-    }
-    if (!data.Dob) {
-      return res.status(400).json({ message: "Dob is required" });
-    }
 
-    // ensure parent survey exists
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    if (!data.Name) return res.status(400).json({ message: "Name is required" });
+    if (!data.Dob) return res.status(400).json({ message: "Dob is required" });
+
+    // ✅ Validate parent survey and family link
     const surveyExists = await SurveyForm.findById(data.Userid);
-    if (!surveyExists) {
-      return res.status(404).json({ message: "Parent survey (Userid) not found" });
-    }
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newborn = new Newborn({
       ...data,
       Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Dob: data.Dob?.trim(),
       Father: data.Father?.trim(),
@@ -464,30 +468,35 @@ export const newbornDetails = async (req, res, next) => {
 };
 
 // --------------------- CHILD ---------------------
+
 export const addChild = async (req, res, next) => {
   try {
     const data = req.body;
-    if (!data || Object.keys(data).length === 0) {
-      return res.status(400).json({ message: "Data is required" });
-    }
 
-    if (!data.Userid || !isValidObjectId(data.Userid)) {
+    if (!data || Object.keys(data).length === 0)
+      return res.status(400).json({ message: "Data is required" });
+
+    if (!data.Userid || !isValidObjectId(data.Userid))
       return res.status(400).json({ message: "Valid Userid is required" });
-    }
-    if (!data.Name) {
-      return res.status(400).json({ message: "Name is required" });
-    }
-    if (!data.Dob) {
-      return res.status(400).json({ message: "Dob is required" });
-    }
+
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    if (!data.Name) return res.status(400).json({ message: "Name is required" });
+    if (!data.Dob) return res.status(400).json({ message: "Dob is required" });
 
     const surveyExists = await SurveyForm.findById(data.Userid);
-    if (!surveyExists) {
-      return res.status(404).json({ message: "Parent survey (Userid) not found" });
-    }
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newChild = new Childrens({
       ...data,
+      Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Dob: data.Dob?.trim(),
       Father: data.Father?.trim(),
@@ -499,7 +508,7 @@ export const addChild = async (req, res, next) => {
     await newChild.save();
 
     return res.status(200).json({
-      message: "Data added successfully",
+      message: "Child added successfully",
       id: newChild._id,
     });
   } catch (error) {
@@ -552,15 +561,28 @@ export const childDetails = async (req, res, next) => {
 export const addYouth = async (req, res, next) => {
   try {
     const data = req.body;
-    if (!data || Object.keys(data).length === 0) {
+
+    if (!data || Object.keys(data).length === 0)
       return res.status(400).json({ message: "Data is required" });
-    }
-    if (data.Userid && !isValidObjectId(data.Userid)) {
-      return res.status(400).json({ message: "Invalid Userid" });
-    }
+
+    if (!data.Userid || !isValidObjectId(data.Userid))
+      return res.status(400).json({ message: "Valid Userid is required" });
+
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    const surveyExists = await SurveyForm.findById(data.Userid);
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newYouth = new Youth({
       ...data,
+      Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
     });
@@ -568,7 +590,7 @@ export const addYouth = async (req, res, next) => {
     await newYouth.save();
 
     return res.status(200).json({
-      message: "Data added successfully",
+      message: "Youth added successfully",
       id: newYouth._id,
     });
   } catch (error) {
@@ -621,15 +643,28 @@ export const updateYouth = async (req, res, next) => {
 export const addMiddleage = async (req, res, next) => {
   try {
     const data = req.body;
-    if (!data || Object.keys(data).length === 0) {
+
+    if (!data || Object.keys(data).length === 0)
       return res.status(400).json({ message: "Data is required" });
-    }
-    if (data.Userid && !isValidObjectId(data.Userid)) {
-      return res.status(400).json({ message: "Invalid Userid" });
-    }
+
+    if (!data.Userid || !isValidObjectId(data.Userid))
+      return res.status(400).json({ message: "Valid Userid is required" });
+
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    const surveyExists = await SurveyForm.findById(data.Userid);
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newMiddleage = new Middleage({
       ...data,
+      Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
     });
@@ -637,7 +672,7 @@ export const addMiddleage = async (req, res, next) => {
     await newMiddleage.save();
 
     return res.status(200).json({
-      message: "Data added successfully",
+      message: "MiddleAge added successfully",
       id: newMiddleage._id,
     });
   } catch (error) {
@@ -686,22 +721,36 @@ export const updateMiddleage = async (req, res, next) => {
 export const addSeniorCitizen = async (req, res, next) => {
   try {
     const data = req.body;
-    if (!data || Object.keys(data).length === 0) {
+
+    if (!data || Object.keys(data).length === 0)
       return res.status(400).json({ message: "No data available" });
-    }
-    if (data.Userid && !isValidObjectId(data.Userid)) {
-      return res.status(400).json({ message: "Invalid Userid" });
-    }
+
+    if (!data.Userid || !isValidObjectId(data.Userid))
+      return res.status(400).json({ message: "Valid Userid is required" });
+
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    const surveyExists = await SurveyForm.findById(data.Userid);
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newSeniorCitizen = new SeniorCitizen({
       ...data,
+      Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
     });
+
     await newSeniorCitizen.save();
 
     return res.status(200).json({
-      message: "Data added successfully",
+      message: "Senior Citizen added successfully",
       id: newSeniorCitizen._id,
     });
   } catch (error) {
@@ -753,22 +802,36 @@ export const updateSeniors = async (req, res, next) => {
 export const addSuperCitizen = async (req, res, next) => {
   try {
     const data = req.body;
-    if (!data || Object.keys(data).length === 0) {
+
+    if (!data || Object.keys(data).length === 0)
       return res.status(400).json({ message: "No data available" });
-    }
-    if (data.Userid && !isValidObjectId(data.Userid)) {
-      return res.status(400).json({ message: "Invalid Userid" });
-    }
+
+    if (!data.Userid || !isValidObjectId(data.Userid))
+      return res.status(400).json({ message: "Valid Userid is required" });
+
+    if (!data.Familymemberid || !isValidObjectId(data.Familymemberid))
+      return res.status(400).json({ message: "Valid Familymemberid is required" });
+
+    const surveyExists = await SurveyForm.findById(data.Userid);
+    if (!surveyExists)
+      return res.status(404).json({ message: "Parent survey not found" });
+
+    const familyExists = await Family.findById(data.Familymemberid);
+    if (!familyExists)
+      return res.status(404).json({ message: "Family member not found" });
 
     const newSuperCitizen = new Supercitizen({
       ...data,
+      Userid: data.Userid,
+      Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
     });
+
     await newSuperCitizen.save();
 
     return res.status(200).json({
-      message: "Data added successfully",
+      message: "Super Citizen added successfully",
       id: newSuperCitizen._id,
     });
   } catch (error) {
@@ -862,6 +925,70 @@ export const PanchayathDetails = async (req, res, next) => {
     });
   } catch (error) {
     console.error("❌ Error in PanchayathDetails:", error);
+    next(error);
+  }
+};
+
+
+export const getIndividualDetails = async (req, res, next) => {
+  try {
+    const { familyId } = req.query;
+
+    if (!familyId || !isValidObjectId(familyId)) {
+      return res.status(400).json({ success: false, message: "Valid familyId is required" });
+    }
+
+    // ✅ Validate Family ID
+    const family = await Family.findById(familyId);
+    if (!family) {
+      return res.status(404).json({ success: false, message: "Family member not found" });
+    }
+
+    // ✅ Check across all age-group collections
+    const [
+      newborn,
+      child,
+      youth,
+      middleage,
+      senior,
+      supercitizen
+    ] = await Promise.all([
+      Newborn.findOne({ Familymemberid: familyId }),
+      Childrens.findOne({ Familymemberid: familyId }),
+      Youth.findOne({ Familymemberid: familyId }),
+      Middleage.findOne({ Familymemberid: familyId }),
+      SeniorCitizen.findOne({ Familymemberid: familyId }),
+      Supercitizen.findOne({ Familymemberid: familyId }),
+    ]);
+
+    // ✅ Determine which form exists
+    const found = newborn || child || youth || middleage || senior || supercitizen;
+    if (!found) {
+      return res.status(404).json({
+        success: false,
+        message: "No individual record found for this family member",
+      });
+    }
+
+    // ✅ Identify the category name for clarity
+    let category = "Unknown";
+    if (newborn) category = "Newborn";
+    else if (child) category = "Children";
+    else if (youth) category = "Youth";
+    else if (middleage) category = "MiddleAge";
+    else if (senior) category = "SeniorCitizen";
+    else if (supercitizen) category = "SuperCitizen";
+
+    // ✅ Return formatted response
+    return res.status(200).json({
+      success: true,
+      message: "Individual details fetched successfully",
+      category,
+      data: found,
+    });
+
+  } catch (error) {
+    console.error("❌ Error in getIndividualDetails:", error);
     next(error);
   }
 };

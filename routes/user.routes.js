@@ -28,6 +28,7 @@ import {
   superCitizenDetails,
   updateSuperCitizen,
   PanchayathDetails,
+  getIndividualDetails,
 } from "../controllers/user.js";
 
 import { verifyJWT } from "../middleware/auth.middleware.js"
@@ -81,5 +82,7 @@ userRouter.put("/updateSuperCitizen", verifyJWT, updateSuperCitizen);
 
 // ✅ Panchayath details (public or restricted based on your choice)
 userRouter.post("/PanchayathDetails", verifyJWT, PanchayathDetails);
+
+userRouter.get("/individualDetails",verifyJWT,getIndividualDetails)
 
 export default userRouter;
