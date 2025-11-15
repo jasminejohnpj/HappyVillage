@@ -25,6 +25,8 @@ import {
   RelationshipWithFamily,
   getSnehajalakamServices,
   getLifeSatisfactionLevels,
+  getDomesticAnimals,
+  getWasteWaterManagementOptions,
 } from "../controllers/dropdown.js";
 
 const surveyRouter = express.Router();
@@ -60,5 +62,8 @@ surveyRouter.get("/EducationMainSubject", EducationMainSubject);
 surveyRouter.get("/RelationshipWithFamily", RelationshipWithFamily);
 surveyRouter.get("/snehajalakam-services", getSnehajalakamServices);
 surveyRouter.get("/life-satisfaction", getLifeSatisfactionLevels);
+surveyRouter.get("/domestic-animals", getDomesticAnimals);
+surveyRouter.get("/wastewater-management", getWasteWaterManagementOptions);
+
 
 export default surveyRouter;

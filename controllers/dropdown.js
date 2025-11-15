@@ -516,3 +516,35 @@ export const getLifeSatisfactionLevels = async (req, res, next) => {
     next(error.message);
   }
 };
+
+
+
+export const getDomesticAnimals = async (req, res, next) => {
+  try {
+    const animals = [
+      "Hen",
+      "Duck",
+      "Cow",
+      "Goat",
+      "Rabbit",
+      "Quail",
+      "Dog",
+      "Cat",
+      "Buffalo",
+      "fish",
+      "love birds"
+    ];
+    return res.status(200).json(animals);
+  } catch (error) {
+    next(error.message);
+  }
+};
+
+export const getWasteWaterManagementOptions = async (req, res, next) => {
+  try {
+    const options = ["No", "Soakage Pit", "Open drainage"];
+    return res.status(200).json(options);
+  } catch (error) {
+    next(error.message);
+  }
+};
