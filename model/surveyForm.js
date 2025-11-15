@@ -109,6 +109,28 @@ const surveyFormSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    DomesticAnimals: {
+      type: [String], 
+      enum: [
+        "Hen",
+        "Duck",
+        "Cow",
+        "Goat",
+        "Rabbit",
+        "Quail",
+        "Dog",
+        "Cat",
+        "Buffalo",
+        "fish",
+        "love birds"
+      ],
+      default: [],
+    },
+     WasteWaterManagementSystem: {
+      type: String, 
+      enum: ["No", "Soakage Pit", "Open drainage"],
+      default: "No",
+    },
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

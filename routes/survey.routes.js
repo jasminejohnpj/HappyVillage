@@ -35,7 +35,7 @@ surveyRouter.get("/village", getVillages);
 surveyRouter.get("/Panchayath", getPanchayaths);
 surveyRouter.get("/WardNo", getWardNumbers);
 surveyRouter.get("/RationCardType", getRationCardTypes);
-surveyRouter.get("/MarritalStatus", getMaritalStatus);
+surveyRouter.get("/MaritalStatus", getMaritalStatus);
 surveyRouter.get("/TypeofHouse", getTypeOfHouse);
 surveyRouter.get("/AreaofHouse", getAreaOfHouse);
 surveyRouter.get("/AvailabilityofCleanWater", getAvailabilityOfCleanWater);

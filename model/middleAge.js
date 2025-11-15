@@ -11,15 +11,15 @@ const middleageSchema = new mongoose.Schema(
         message: (props) => `Invalid Userid: ${props.value}`,
       },
     },
-     Familymemberid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Family",
-          required: [true, "Family ID is required"],
-          validate: {
-            validator: (v) => mongoose.Types.ObjectId.isValid(v),
-            message: (props) => `Invalid Family: ${props.value}`,
-          },
-        },
+    Familymemberid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Family",
+      required: [true, "Family ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Family: ${props.value}`,
+      },
+    },
     Name: {
       type: String,
       required: [true, "Name is required"],
@@ -41,12 +41,14 @@ const middleageSchema = new mongoose.Schema(
     Father: { type: String, trim: true, default: "" },
     Mother: { type: String, trim: true, default: "" },
     EducationalQualification: { type: String, trim: true, default: "" },
+    otherQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
     TerminateWithoutCompletion: { type: Boolean, default: false },
     Course: { type: String, trim: true, default: "" },
     Reason: { type: String, trim: true, default: "" },
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
+    
     InstitutionName: { type: String, trim: true, default: "" },
     SelfEmployement: { type: Boolean, default: false },
     EmployementDetails: { type: String, trim: true, default: "" },
