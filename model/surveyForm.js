@@ -46,11 +46,11 @@ const surveyFormSchema = new mongoose.Schema(
 
     FamilymembersNO: {
       type: Number,
-      required: true,
-      min: [1, "Family member count must be at least 1"],
+      required: [true, "No. of house members is required"],
+      min: [1, "No. of house members must be at least 1"],
       validate: {
         validator: Number.isInteger,
-        message: "Family member count must be an integer",
+        message: "No. of house members must be an integer",
       },
     },
 
@@ -76,10 +76,6 @@ const surveyFormSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: "",
-      validate: {
-        validator: (v) => !v || /^\d+$/.test(v),
-        message: "Number of vehicles must be a number",
-      },
     },
 
     Area_Paddyland: { type: String, trim: true, default: "" },
@@ -93,7 +89,11 @@ const surveyFormSchema = new mongoose.Schema(
     KWAConnection: { type: Boolean, default: false },
     OrganicWasteManagementMethod: { type: String, trim: true, default: "" },
     InorganicWasteManagementMethod: { type: String, trim: true, default: "" },
-    OtherMethodInorganicWasteManagement: { type: String, trim: true, default: "" },
+    OtherMethodInorganicWasteManagement: {
+      type: String,
+      trim: true,
+      default: "",
+    },
 
     SnehajalakamService: { type: String, enum: ["Yes", "No"], default: "No" },
     SnehajalakamServiceDetails: {
@@ -110,7 +110,7 @@ const surveyFormSchema = new mongoose.Schema(
       default: [],
     },
     DomesticAnimals: {
-      type: [String], 
+      type: [String],
       enum: [
         "Hen",
         "Duck",
@@ -122,12 +122,12 @@ const surveyFormSchema = new mongoose.Schema(
         "Cat",
         "Buffalo",
         "fish",
-        "love birds"
+        "love birds",
       ],
       default: [],
     },
-     WasteWaterManagementSystem: {
-      type: String, 
+    WasteWaterManagementSystem: {
+      type: String,
       enum: ["No", "Soakage Pit", "Open drainage"],
       default: "No",
     },

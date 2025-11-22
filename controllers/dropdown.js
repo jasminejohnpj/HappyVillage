@@ -133,24 +133,37 @@ export const getTypeOfHouse = async (req, res, next) => {
 
 
 export const getAreaOfHouse = async (req, res, next) => {
-    try {
-        const list = await surveydata
-            .find({ AreaofHouse: { $nin: ["0", null, ""] } })
-            .select("AreaofHouse -_id")
-            .exec();
+  try {
+    const list = await surveydata
+      .find({ AreaofHouse: { $nin: ["0", null, ""] } })
+      .select("AreaofHouse -_id")
+      .exec();
 
-        const areaOfHouse = list
-            .map(item => item.AreaofHouse?.trim())
-            .filter(area => area && area.length > 0);
+    const areaOfHouse = list
+      .map(item => item.AreaofHouse?.trim())
+      .filter(area => area && area.length > 0);
 
-        const uniqueAreaOfHouse = [...new Set(areaOfHouse)].sort();
+    const uniqueAreaOfHouse = [...new Set(areaOfHouse)];
 
-        return res.status(200).json(uniqueAreaOfHouse);
-    } catch (error) {
-        next(error.message);
-    }
+    // Desired order
+    const order = ["Below 500", "500 - 1000", "Above 1000"];
+
+    const sortedAreaOfHouse = uniqueAreaOfHouse.sort((a, b) => {
+      const aIndex = order.indexOf(a);
+      const bIndex = order.indexOf(b);
+
+      // If not found in order list, push to end
+      const safeA = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+      const safeB = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+
+      return safeA - safeB;
+    });
+
+    return res.status(200).json(sortedAreaOfHouse);
+  } catch (error) {
+    next(error.message);
+  }
 };
-
 
 export const getAvailabilityOfCleanWater = async (req, res, next) => {
     try {
@@ -510,7 +523,7 @@ export const getSnehajalakamServices = async (req, res, next) => {
 
 export const getLifeSatisfactionLevels = async (req, res, next) => {
   try {
-    const levels = ["Poor", "Fair", "Good", "Very Good", "Excellent"];
+    const levels = ["Poor", "Fair", "Good", "Very Good", "Excellent","N/A"];
     return res.status(200).json(levels);
   } catch (error) {
     next(error.message);

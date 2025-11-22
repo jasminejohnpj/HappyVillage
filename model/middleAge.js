@@ -71,7 +71,7 @@ const middleageSchema = new mongoose.Schema(
     RewardsorPrizes: { type: String, trim: true, default: "" },
     LifeSatisfaction: {
       type: String,
-      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent"],
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent,N/A"],
       default: "Good",
       trim: true,
     },
