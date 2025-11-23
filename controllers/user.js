@@ -992,3 +992,72 @@ export const getIndividualDetails = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const updateIndividualByFamilyId = async (req, res) => {
+  try {
+    const { familyId } = req.query;
+    const data = req.body;
+
+    if (!familyId || !isValidObjectId(familyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid familyId is required",
+      });
+    }
+
+    if (!data || Object.keys(data).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Update data is required",
+      });
+    }
+
+    // Check in all collections using Familymemberid
+    const models = {
+      Newborn,
+      Children: Childrens,
+      Youth,
+      MiddleAge: Middleage,
+      SeniorCitizen,
+      SuperCitizen: Supercitizen,
+    };
+
+    let updatedDoc = null;
+    let category = null;
+
+    for (const [key, Model] of Object.entries(models)) {
+      const doc = await Model.findOne({ Familymemberid: familyId });
+      if (doc) {
+        updatedDoc = await Model.findOneAndUpdate(
+          { Familymemberid: familyId },
+          { $set: data },
+          { new: true }
+        );
+        category = key;
+        break;
+      }
+    }
+
+    if (!updatedDoc) {
+      return res.status(404).json({
+        success: false,
+        message: "No record found for this family member",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `${category} updated successfully`,
+      category,
+      updated: updatedDoc,
+    });
+
+  } catch (error) {
+    console.error("❌ Error in updateIndividualByFamilyId:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update individual",
+    });
+  }
+};

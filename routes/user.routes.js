@@ -29,6 +29,7 @@ import {
   updateSuperCitizen,
   PanchayathDetails,
   getIndividualDetails,
+  updateIndividualByFamilyId,
 } from "../controllers/user.js";
 
 import { verifyJWT } from "../middleware/auth.middleware.js"
@@ -84,5 +85,6 @@ userRouter.put("/updateSuperCitizen", verifyJWT, updateSuperCitizen);
 userRouter.post("/PanchayathDetails", verifyJWT, PanchayathDetails);
 
 userRouter.get("/individualDetails",verifyJWT,getIndividualDetails)
+userRouter.patch("/individualupdate",verifyJWT,updateIndividualByFamilyId)
 
 export default userRouter;
