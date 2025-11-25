@@ -48,8 +48,8 @@ const middleageSchema = new mongoose.Schema(
     Reason: { type: String, trim: true, default: "" },
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
-     Otheroccupations: { type: String, trim: true, default: "" },
-    
+    Otheroccupations: { type: String, trim: true, default: "" },
+
     InstitutionName: { type: String, trim: true, default: "" },
     SelfEmployement: { type: Boolean, default: false },
     EmployementDetails: { type: String, trim: true, default: "" },
@@ -108,6 +108,12 @@ const middleageSchema = new mongoose.Schema(
       type: String,
       enum: ["Yes", "No"],
       default: "No",
+    },
+    Remarks: {
+      type: String,
+      trim: true,
+      default: "",
+      maxLength: 500, // optional limit
     },
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },

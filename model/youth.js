@@ -81,6 +81,12 @@ const youthSchema = new mongoose.Schema(
       enum: ["Yes", "No"],
       default: "No",
     },
+    Remarks: {
+  type: String,
+  trim: true,
+  default: "",
+  maxLength: 500, // optional limit
+},
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
     PhysicalDisabilityDetails: { type: String, trim: true, default: "" },

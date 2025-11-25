@@ -11,15 +11,15 @@ const ChildSchema = new mongoose.Schema(
         message: (props) => `Invalid Userid: ${props.value}`,
       },
     },
-     Familymemberid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Family",
-          required: [true, "Family ID is required"],
-          validate: {
-            validator: (v) => mongoose.Types.ObjectId.isValid(v),
-            message: (props) => `Invalid Family: ${props.value}`,
-          },
-        },
+    Familymemberid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Family",
+      required: [true, "Family ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Family: ${props.value}`,
+      },
+    },
     Name: {
       type: String,
       required: [true, "Name is required"],
@@ -64,6 +64,12 @@ const ChildSchema = new mongoose.Schema(
       type: String,
       enum: ["Yes", "No"],
       default: "No",
+    },
+    Remarks: {
+      type: String,
+      trim: true,
+      default: "",
+      maxLength: 500, // optional limit
     },
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
