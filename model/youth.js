@@ -11,15 +11,15 @@ const youthSchema = new mongoose.Schema(
         message: (props) => `Invalid Userid: ${props.value}`,
       },
     },
-     Familymemberid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Family",
-          required: [true, "Family ID is required"],
-          validate: {
-            validator: (v) => mongoose.Types.ObjectId.isValid(v),
-            message: (props) => `Invalid Family: ${props.value}`,
-          },
-        },
+    Familymemberid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Family",
+      required: [true, "Family ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Family: ${props.value}`,
+      },
+    },
     Name: {
       type: String,
       required: [true, "Name is required"],
@@ -56,6 +56,7 @@ const youthSchema = new mongoose.Schema(
     Reason: { type: String, trim: true, default: "" },
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
+    Otheroccupations: { type: String, trim: true, default: "" },
     InstitutionName: { type: String, trim: true, default: "" },
     SelfEmployement: { type: Boolean, default: false },
     EmployementDetails: { type: String, trim: true, default: "" },
@@ -63,7 +64,8 @@ const youthSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate job names are not allowed",
       },
     },
@@ -74,7 +76,11 @@ const youthSchema = new mongoose.Schema(
     ArtisticorAthleticAptitude: { type: String, trim: true, default: "" },
     RewardsorPrizes: { type: String, trim: true, default: "" },
     ExamTensionsorStress: { type: Boolean, default: false },
-    HasIllnessOrDisability: { type: String, enum: ["Yes", "No"], default: "No" },
+    HasIllnessOrDisability: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
     PhysicalDisabilityDetails: { type: String, trim: true, default: "" },
@@ -85,7 +91,8 @@ const youthSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate disease types are not allowed",
       },
     },
@@ -101,7 +108,8 @@ const youthSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate pension types are not allowed",
       },
     },
