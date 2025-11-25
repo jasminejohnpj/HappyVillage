@@ -420,23 +420,32 @@ export const CurrentOccupation = async (req,res,next)=>{
     }
  }
 
-export const Gender = async(req,res, next)=>{
-    try{
-        const list = await surveydata
-            .find({ Gender: { $nin: ["0", null, ""] } })
-            .select("Gender -_id")
-            .exec();
+export const Gender = async (req, res, next) => {
+  try {
+    const list = await surveydata
+      .find({ Gender: { $nin: ["0", null, ""] } })
+      .select("Gender -_id")
+      .exec();
 
-        const Gender = list
-            .map(item => item.Gender?.trim())
-            .filter(pd => pd && pd.length > 0);
+    const GenderList = list
+      .map(item => item.Gender?.trim())
+      .filter(g => g && g.length > 0);
 
-        const uniqueGender = [...new Set(Gender)].sort();
-         return res.status(200).json(uniqueGender);
-    } catch(error){
-        next(error.message);
-    }
-}
+    const unique = [...new Set(GenderList)];
+
+    // ⭐ Custom order
+    const order = ["Male", "Female", "Transgender"];
+
+    const sorted = unique.sort(
+      (a, b) => order.indexOf(a) - order.indexOf(b)
+    );
+
+    return res.status(200).json(sorted);
+
+  } catch (error) {
+    next(error.message);
+  }
+};
 
 export const EducationMainSubject = async(req, res, next)=>{
     try{
@@ -490,11 +499,42 @@ export const RelationshipWithFamily = async (req, res, next) => {
 
     const relationships = list
       .map(item => item.RelationshipWithFamily?.trim())
-      .filter(Boolean); // filters "", null, undefined
+      .filter(Boolean); // remove "", null, undefined
 
-    const uniqueRelationships = [...new Set(relationships)].sort();
+    // remove duplicates
+    const unique = [...new Set(relationships)];
 
-    return res.status(200).json(uniqueRelationships);
+    // ⭐ EXACT required order
+    const order = [
+      "Family Head",
+      "Father",
+      "Mother",
+      "Husband",
+      "Wife",
+      "Son",
+      "Daughter",
+      "Daughter in law",
+      "Son in law",
+      "Grandmother",
+      "Grandfather",
+      "Grandson",
+      "Granddaughter",
+      "Brother",
+      "Sister",
+      "Uncle",
+      "Aunt",
+      "Niece",
+      "Nephew",
+      "Others (Specify) "
+    ];
+
+    // ⭐ custom sorting
+    const sorted = unique.sort(
+      (a, b) => order.indexOf(a) - order.indexOf(b)
+    );
+
+    return res.status(200).json(sorted);
+
   } catch (error) {
     console.error("Error fetching RelationshipWithFamily list:", error);
     return res.status(500).json({ message: error.message });

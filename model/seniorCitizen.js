@@ -40,6 +40,8 @@ const seniorCitizenSchema = new mongoose.Schema(
     },
     EducationalQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
+    OtherMainSubject: { type: String, trim: true, default: "" },
+
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
      Otheroccupations: { type: String, trim: true, default: "" },

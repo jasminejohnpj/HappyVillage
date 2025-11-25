@@ -51,6 +51,8 @@ const youthSchema = new mongoose.Schema(
     CurrentlyStudying: { type: String, trim: true, default: "" },
     OtherCourse: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
+    OtherMainSubject: { type: String, trim: true, default: "" },
+
     TerminateWithoutCompletion: { type: Boolean, default: false },
     Course: { type: String, trim: true, default: "" },
     Reason: { type: String, trim: true, default: "" },
