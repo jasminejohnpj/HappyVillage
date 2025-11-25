@@ -99,6 +99,12 @@ const newbornSchema = new mongoose.Schema(
       maxLength: [200, "Details too long"],
       default: "",
     },
+    Remarks: {
+  type: String,
+  trim: true,
+  default: "",
+  maxLength: 500, // optional limit
+},
     Vaccination: {
       type: Boolean,
       default: false,

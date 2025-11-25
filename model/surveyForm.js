@@ -123,6 +123,7 @@ const surveyFormSchema = new mongoose.Schema(
         "Buffalo",
         "fish",
         "love birds",
+        "N/A"
       ],
       default: [],
     },

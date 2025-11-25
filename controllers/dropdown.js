@@ -545,7 +545,8 @@ export const getDomesticAnimals = async (req, res, next) => {
       "Cat",
       "Buffalo",
       "fish",
-      "love birds"
+      "love birds",
+      "N/A"
     ];
     return res.status(200).json(animals);
   } catch (error) {
