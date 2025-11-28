@@ -260,19 +260,38 @@ export const getBloodGroups = async (req, res, next) => {
         const list = await surveydata
             .find({ BloodGroup: { $nin: ["0", null, ""] } })
             .select("BloodGroup -_id")
-            .exec();
+            .lean();
 
+        // Extract and clean
         const bloodGroups = list
             .map(item => item.BloodGroup?.trim())
-            .filter(bg => bg && bg.length > 0);
+            .filter(Boolean);
 
-        const uniqueBloodGroups = [...new Set(bloodGroups)].sort();
+        // Remove duplicates
+        const unique = [...new Set(bloodGroups)];
 
-        return res.status(200).json(uniqueBloodGroups);
+        // Define proper sorting order
+        const order = ["A⁺", "A⁻", "B⁺", "B⁻", "AB⁺", "AB⁻", "O⁺", "O⁻"];
+
+        // Sort based on the order, unknown/N/A goes last
+        const sorted = unique.sort((a, b) => {
+            const aIndex = order.indexOf(a);
+            const bIndex = order.indexOf(b);
+
+            if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+            if (aIndex === -1) return 1;  // a is unknown → send to last
+            if (bIndex === -1) return -1; // b is unknown → send to last
+
+            return aIndex - bIndex;
+        });
+
+        return res.status(200).json(sorted);
+
     } catch (error) {
         next(error.message);
     }
 };
+
 
 export const getPensionDetails = async (req, res) => {
   try {

@@ -29,7 +29,7 @@ const newbornSchema = new mongoose.Schema(
     },
     Dob: {
       type: String,
-      required: [true, "Date of Birth is required"],
+   
       trim: true,
     },
     Father: {
