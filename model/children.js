@@ -29,7 +29,7 @@ const ChildSchema = new mongoose.Schema(
     },
     Dob: {
       type: String,
-      required: [true, "Date of Birth is required"],
+     
       trim: true,
     },
     Father: { type: String, trim: true, maxLength: 50, default: "" },

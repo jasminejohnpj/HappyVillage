@@ -168,9 +168,55 @@ export const refreshAccessToken = async (req, res) => {
 
 // --------------------- SURVEY FORM CONTROLLERS ---------------------
 
+// export const submitSurveyForm = async (req, res) => {
+//   try {
+//     const required = ["Village", "Panchayath", "WardNo", "HouseholdHead"];
+//     for (const field of required) {
+//       if (!req.body[field]) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `${field} is required`,
+//         });
+//       }
+//     }
+
+//     const userId = req.user?._id;
+//     if (!userId)
+//       return res.status(401).json({ success: false, message: "Unauthorized" });
+
+//     const safeLocation =
+//       req.body.location &&
+//       req.body.location.type === "Point" &&
+//       Array.isArray(req.body.location.coordinates)
+//         ? req.body.location
+//         : { type: "Point", coordinates: [0, 0] };
+
+//     const newSurvey = new SurveyForm({
+//       ...req.body,
+//       Noofpeopleworkings: toNumber(req.body.Noofpeopleworkings),
+//       RegularIncomePeople: toNumber(req.body.RegularIncomePeople),
+//       MonthlyHouseholdIncome: toNumber(req.body.MonthlyHouseholdIncome),
+//       createdBy: userId,
+//       location: safeLocation,
+//     });
+
+//     await newSurvey.save();
+//     return res.status(201).json({
+//       success: true,
+//       message: "Survey form submitted successfully",
+//       data: newSurvey,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error in submitSurveyForm:", error);
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Failed to save survey data" });
+//   }
+// };
 export const submitSurveyForm = async (req, res) => {
   try {
-    const required = ["Village", "Panchayath", "WardNo", "HouseholdHead"];
+    // Required fields
+    const required = ["Village", "Panchayath", "WardNo", "HouseholdHead", "HouseNumber"];
     for (const field of required) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -180,10 +226,34 @@ export const submitSurveyForm = async (req, res) => {
       }
     }
 
+    // Validate HouseNumber (must be a number)
+    if (isNaN(Number(req.body.HouseNumber))) {
+      return res.status(400).json({
+        success: false,
+        message: "HouseNumber must be a valid number",
+      });
+    }
+
     const userId = req.user?._id;
     if (!userId)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
+    // 🔍 Check duplicate with Panchayath included
+    const existing = await SurveyForm.findOne({
+      Panchayath: req.body.Panchayath,
+      Village: req.body.Village,
+      WardNo: req.body.WardNo,
+      HouseNumber: Number(req.body.HouseNumber),
+    });
+
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        message: "Survey already exists for this HouseNumber in this Ward and Panchayath",
+      });
+    }
+
+    // Safe location validation
     const safeLocation =
       req.body.location &&
       req.body.location.type === "Point" &&
@@ -191,8 +261,10 @@ export const submitSurveyForm = async (req, res) => {
         ? req.body.location
         : { type: "Point", coordinates: [0, 0] };
 
+    // Create new entry
     const newSurvey = new SurveyForm({
       ...req.body,
+      HouseNumber: Number(req.body.HouseNumber),
       Noofpeopleworkings: toNumber(req.body.Noofpeopleworkings),
       RegularIncomePeople: toNumber(req.body.RegularIncomePeople),
       MonthlyHouseholdIncome: toNumber(req.body.MonthlyHouseholdIncome),
@@ -201,6 +273,7 @@ export const submitSurveyForm = async (req, res) => {
     });
 
     await newSurvey.save();
+
     return res.status(201).json({
       success: true,
       message: "Survey form submitted successfully",
@@ -379,7 +452,7 @@ export const addNewborn = async (req, res, next) => {
       return res.status(400).json({ message: "Valid Familymemberid is required" });
 
     if (!data.Name) return res.status(400).json({ message: "Name is required" });
-    if (!data.Dob) return res.status(400).json({ message: "Dob is required" });
+   
 
     // ✅ Validate parent survey and family link
     const surveyExists = await SurveyForm.findById(data.Userid);
@@ -483,7 +556,7 @@ export const addChild = async (req, res, next) => {
       return res.status(400).json({ message: "Valid Familymemberid is required" });
 
     if (!data.Name) return res.status(400).json({ message: "Name is required" });
-    if (!data.Dob) return res.status(400).json({ message: "Dob is required" });
+   
 
     const surveyExists = await SurveyForm.findById(data.Userid);
     if (!surveyExists)
