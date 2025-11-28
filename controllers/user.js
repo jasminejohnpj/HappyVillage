@@ -215,8 +215,7 @@ export const refreshAccessToken = async (req, res) => {
 // };
 export const submitSurveyForm = async (req, res) => {
   try {
-    // Required fields
-    const required = ["Village", "Panchayath", "WardNo", "HouseholdHead", "HouseNumber"];
+    const required = ["Village", "Panchayath", "WardNo", "HouseholdHead", "HouseNo"];
     for (const field of required) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -226,45 +225,34 @@ export const submitSurveyForm = async (req, res) => {
       }
     }
 
-    // Validate HouseNumber (must be a number)
-    if (isNaN(Number(req.body.HouseNumber))) {
-      return res.status(400).json({
-        success: false,
-        message: "HouseNumber must be a valid number",
-      });
-    }
-
     const userId = req.user?._id;
     if (!userId)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    // 🔍 Check duplicate with Panchayath included
+    // Duplicate check
     const existing = await SurveyForm.findOne({
       Panchayath: req.body.Panchayath,
       Village: req.body.Village,
       WardNo: req.body.WardNo,
-      HouseNumber: Number(req.body.HouseNumber),
+      HouseNo: req.body.HouseNo.trim(),
     });
 
     if (existing) {
       return res.status(409).json({
         success: false,
-        message: "Survey already exists for this HouseNumber in this Ward and Panchayath",
+        message: "Survey already exists for this HouseNo in this Ward and Panchayath",
       });
     }
 
-    // Safe location validation
     const safeLocation =
-      req.body.location &&
-      req.body.location.type === "Point" &&
+      req.body.location?.type === "Point" &&
       Array.isArray(req.body.location.coordinates)
         ? req.body.location
         : { type: "Point", coordinates: [0, 0] };
 
-    // Create new entry
     const newSurvey = new SurveyForm({
       ...req.body,
-      HouseNumber: Number(req.body.HouseNumber),
+      HouseNo: req.body.HouseNo.trim(),
       Noofpeopleworkings: toNumber(req.body.Noofpeopleworkings),
       RegularIncomePeople: toNumber(req.body.RegularIncomePeople),
       MonthlyHouseholdIncome: toNumber(req.body.MonthlyHouseholdIncome),
@@ -281,9 +269,10 @@ export const submitSurveyForm = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error in submitSurveyForm:", error);
-    return res
-      .status(500)
-      .json({ success: false, message: "Failed to save survey data" });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to save survey data",
+    });
   }
 };
 
@@ -476,6 +465,7 @@ export const addNewborn = async (req, res, next) => {
       IllnessOrDisabilityDetails: data.IllnessOrDisabilityDetails?.trim(),
       PhysicalDisabilityDetails: data.PhysicalDisabilityDetails?.trim(),
       MentalDisabilityDetails: data.MentalDisabilityDetails?.trim(),
+           Remarks: data.Remarks?.trim() || "",
     });
 
     await newborn.save();
@@ -576,6 +566,7 @@ export const addChild = async (req, res, next) => {
       Mother: data.Mother?.trim(),
       Guardian: data.Guardian?.trim(),
       Phone: data.Phone?.trim() || undefined,
+      Remarks: data.Remarks?.trim() || "",
     });
 
     await newChild.save();
@@ -658,6 +649,7 @@ export const addYouth = async (req, res, next) => {
       Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
+           Remarks: data.Remarks?.trim() || "",
     });
 
     await newYouth.save();
@@ -740,6 +732,7 @@ export const addMiddleage = async (req, res, next) => {
       Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
+           Remarks: data.Remarks?.trim() || "",
     });
 
     await newMiddleage.save();
@@ -818,6 +811,7 @@ export const addSeniorCitizen = async (req, res, next) => {
       Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
+           Remarks: data.Remarks?.trim() || "",
     });
 
     await newSeniorCitizen.save();
@@ -899,6 +893,7 @@ export const addSuperCitizen = async (req, res, next) => {
       Familymemberid: data.Familymemberid,
       Name: data.Name?.trim(),
       Phone: data.Phone?.trim() || undefined,
+           Remarks: data.Remarks?.trim() || "",
     });
 
     await newSuperCitizen.save();
