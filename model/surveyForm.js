@@ -62,7 +62,7 @@ const surveyFormSchema = new mongoose.Schema(
     Solar: { type: Boolean, default: false },
     ResidentialHouse: { type: String, trim: true, default: "" },
     HabitableHouse: { type: Boolean, default: false },
-    TypeofHouse: {  type: [String],  default: [],},
+    TypeofHouse: { type: [String], default: [] },
     AreaofHouse: { type: String, trim: true, default: "" },
 
     Noofpeopleworkings: { type: Number, min: 0, default: 0 },
@@ -123,9 +123,15 @@ const surveyFormSchema = new mongoose.Schema(
         "Buffalo",
         "fish",
         "love birds",
-        "N/A"
+        "N/A",
       ],
       default: [],
+    },
+    Remarks: {
+      type: String,
+      trim: true,
+      default: "",
+      maxLength: 500, // optional limit
     },
     WasteWaterManagementSystem: {
       type: String,
