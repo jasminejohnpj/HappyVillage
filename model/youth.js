@@ -47,6 +47,7 @@ const youthSchema = new mongoose.Schema(
       trim: true,
     },
     EducationalQualification: { type: String, trim: true, default: "" },
+    otherEducationalQualification: { type: String, trim: true, default: "" },
     OtherQualification: { type: String, trim: true, default: "" },
     CurrentlyStudying: { type: String, trim: true, default: "" },
     OtherCourse: { type: String, trim: true, default: "" },
@@ -84,11 +85,11 @@ const youthSchema = new mongoose.Schema(
       default: "No",
     },
     Remarks: {
-  type: String,
-  trim: true,
-  default: "",
-  maxLength: 500, // optional limit
-},
+      type: String,
+      trim: true,
+      default: "",
+      maxLength: 500, // optional limit
+    },
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
     PhysicalDisabilityDetails: { type: String, trim: true, default: "" },

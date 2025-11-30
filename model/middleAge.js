@@ -41,6 +41,7 @@ const middleageSchema = new mongoose.Schema(
     Father: { type: String, trim: true, default: "" },
     Mother: { type: String, trim: true, default: "" },
     EducationalQualification: { type: String, trim: true, default: "" },
+    otherEducationalQualification: { type: String, trim: true, default: "" },
     otherQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
     TerminateWithoutCompletion: { type: Boolean, default: false },

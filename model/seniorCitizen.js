@@ -11,15 +11,15 @@ const seniorCitizenSchema = new mongoose.Schema(
         message: (props) => `Invalid Userid: ${props.value}`,
       },
     },
-     Familymemberid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Family",
-          required: [true, "Family ID is required"],
-          validate: {
-            validator: (v) => mongoose.Types.ObjectId.isValid(v),
-            message: (props) => `Invalid Family: ${props.value}`,
-          },
-        },
+    Familymemberid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Family",
+      required: [true, "Family ID is required"],
+      validate: {
+        validator: (v) => mongoose.Types.ObjectId.isValid(v),
+        message: (props) => `Invalid Family: ${props.value}`,
+      },
+    },
     Name: {
       type: String,
       required: [true, "Name is required"],
@@ -39,12 +39,13 @@ const seniorCitizenSchema = new mongoose.Schema(
       },
     },
     EducationalQualification: { type: String, trim: true, default: "" },
+    otherEducationalQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
     OtherMainSubject: { type: String, trim: true, default: "" },
 
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
-     Otheroccupations: { type: String, trim: true, default: "" },
+    Otheroccupations: { type: String, trim: true, default: "" },
     InstitutionName: { type: String, trim: true, default: "" },
     SelfEmployement: { type: Boolean, default: false },
     EmployementDetails: { type: String, trim: true, default: "" },
@@ -52,7 +53,8 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate job names are not allowed",
       },
     },
@@ -67,7 +69,8 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate pension types are not allowed",
       },
     },
@@ -100,11 +103,11 @@ const seniorCitizenSchema = new mongoose.Schema(
       default: "No",
     },
     Remarks: {
-  type: String,
-  trim: true,
-  default: "",
-  maxLength: 500, // optional limit
-},
+      type: String,
+      trim: true,
+      default: "",
+      maxLength: 500, // optional limit
+    },
     IllnessOrDisabilityDetails: { type: String, trim: true, default: "" },
     HasPhysicalDisability: { type: String, enum: ["Yes", "No"], default: "No" },
     PhysicalDisabilityDetails: { type: String, trim: true, default: "" },
@@ -116,7 +119,8 @@ const seniorCitizenSchema = new mongoose.Schema(
       type: [String],
       default: [],
       validate: {
-        validator: (arr) => Array.isArray(arr) && new Set(arr).size === arr.length,
+        validator: (arr) =>
+          Array.isArray(arr) && new Set(arr).size === arr.length,
         message: "Duplicate disease types are not allowed",
       },
     },
