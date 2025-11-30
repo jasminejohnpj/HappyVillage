@@ -50,9 +50,10 @@ const superCitizenSchema = new mongoose.Schema(
       trim: true,
     },
     EducationalQualification: { type: String, trim: true, default: "" },
+    otherEducationalQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
     OtherMainSubject: { type: String, trim: true, default: "" },
-
+    ArtisticorAthleticAptitude: { type: String, trim: true, default: "" },
     CurrentlyWorking: { type: Boolean, default: false },
     CurrentOccupation: { type: String, trim: true, default: "" },
     Otheroccupations: { type: String, trim: true, default: "" },
