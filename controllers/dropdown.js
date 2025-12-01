@@ -178,6 +178,13 @@ export const getAvailabilityOfCleanWater = async (req, res, next) => {
 
         const uniqueCleanWaterAvailability = [...new Set(cleanWaterAvailability)].sort();
 
+        uniqueCleanWaterAvailability.sort((a,b) => {
+          if (a === "N/A") return 1
+          if (b === "N/A") return -1
+          return a.localeCompare(b)
+
+        })
+
         return res.status(200).json(uniqueCleanWaterAvailability);
     }catch (error) {
         next(error.message);
