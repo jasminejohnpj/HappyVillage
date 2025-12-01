@@ -224,6 +224,7 @@ export const submitSurveyForm = async (req, res) => {
       "HouseholdHead",
       "HouseNo",
     ];
+
     for (const field of required) {
       if (!req.body[field]) {
         return res.status(400).json({
@@ -237,11 +238,10 @@ export const submitSurveyForm = async (req, res) => {
     if (!userId)
       return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    // Duplicate check
     const existing = await SurveyForm.findOne({
-      Panchayath: req.body.Panchayath,
-      Village: req.body.Village,
-      WardNo: req.body.WardNo,
+      Panchayath: req.body.Panchayath.trim(),
+      Village: req.body.Village.trim(),
+      WardNo: req.body.WardNo.toString().trim(),
       HouseNo: req.body.HouseNo.trim(),
     });
 
@@ -261,13 +261,16 @@ export const submitSurveyForm = async (req, res) => {
 
     const newSurvey = new SurveyForm({
       ...req.body,
+      Village: req.body.Village.trim(),
+      Panchayath: req.body.Panchayath.trim(),
+      WardNo: req.body.WardNo.toString().trim(),
       HouseNo: req.body.HouseNo.trim(),
       Noofpeopleworkings: toNumber(req.body.Noofpeopleworkings),
       RegularIncomePeople: toNumber(req.body.RegularIncomePeople),
       MonthlyHouseholdIncome: toNumber(req.body.MonthlyHouseholdIncome),
       createdBy: userId,
       location: safeLocation,
-      Remarks: data.Remarks?.trim() || "",
+      Remarks: req.body.Remarks?.trim() || "",
     });
 
     await newSurvey.save();
@@ -285,6 +288,7 @@ export const submitSurveyForm = async (req, res) => {
     });
   }
 };
+
 
 export const SurveyDetails = async (req, res) => {
   try {
@@ -794,7 +798,7 @@ export const middleageDetails = async (req, res, next) => {
     }
     const user = await Middleage.findById(id);
     if (!user) {
-      return res.status(401).json({ message: "data not found" });
+      return res.status(404).json({ message: "data not found" });
     }
     return res.status(200).json({ message: "data fetched successfully", user });
   } catch (error) {
@@ -965,7 +969,7 @@ export const superCitizenDetails = async (req, res, next) => {
     }
     const user = await Supercitizen.findOne({ _id: id });
     if (!user) {
-      return res.status(401).json({ message: "user not found" });
+      return res.status(404).json({ message: "user not found" });
     }
     return res.status(200).json({ message: "data fetched successfully", user });
   } catch (error) {
