@@ -29,7 +29,7 @@ const ChildSchema = new mongoose.Schema(
     },
     Dob: {
       type: String,
-     
+
       trim: true,
     },
     Father: { type: String, trim: true, maxLength: 50, default: "" },
@@ -45,9 +45,11 @@ const ChildSchema = new mongoose.Schema(
       },
     },
     EducationalQualification: { type: String, trim: true, default: "" },
-    otherEducationalQualification:{type:String,trim:true,default:""},
+    otherEducationalQualification: { type: String, trim: true, default: "" },
     CurrentlyStudying: { type: String, trim: true, default: "" },
     DroppedClass: { type: Boolean, default: false },
+    TerminateWithoutCompletion: { type: Boolean, default: false },
+    CurrentlyWorking: { type: Boolean, default: false },
     Reason: { type: String, trim: true, default: "" },
     CurrentOccupation: { type: String, trim: true, default: "" },
     Otheroccupations: { type: String, trim: true, default: "" },
