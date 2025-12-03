@@ -239,12 +239,11 @@ export const getEducationalQualifications = async (req, res, next) => {
       .select("EducationalQualification -_id")
       .lean();
 
-    // Extract all educational qualifications
     let qualifications = list
       .map(item => item.EducationalQualification?.trim())
-      .filter(Boolean); // removes "", null, undefined
+      .filter(Boolean);
 
-    // Apply age-based filtering
+    // Age filter
     const ageNum = Number(Age);
     if (!isNaN(ageNum) && ageNum >= 4 && ageNum <= 18) {
       qualifications = qualifications.filter(
@@ -252,7 +251,15 @@ export const getEducationalQualifications = async (req, res, next) => {
       );
     }
 
-    const uniqueQualifications = [...new Set(qualifications)].sort();
+    // Get unique list
+    const uniqueQualifications = [...new Set(qualifications)];
+
+    // Custom sort (N/A must be last)
+    uniqueQualifications.sort((a, b) => {
+      if (a === "N/A") return 1;      // push a down
+      if (b === "N/A") return -1;     // push b down
+      return a.localeCompare(b);      // normal alphabetical
+    });
 
     return res.status(200).json(uniqueQualifications);
   } catch (error) {
@@ -260,6 +267,7 @@ export const getEducationalQualifications = async (req, res, next) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
 
 
 export const getBloodGroups = async (req, res, next) => {
@@ -473,23 +481,31 @@ export const Gender = async (req, res, next) => {
   }
 };
 
-export const EducationMainSubject = async(req, res, next)=>{
-    try{
-         const list = await surveydata
-            .find({ EducationMainSubject: { $nin: ["0", null, ""] } })
-            .select("EducationMainSubject -_id")
-            .exec();
+export const EducationMainSubject = async (req, res, next) => {
+  try {
+    const list = await surveydata
+      .find({ EducationMainSubject: { $nin: ["0", null, ""] } })
+      .select("EducationMainSubject -_id")
+      .lean();
 
-        const EducationMainSubject = list
-            .map(item => item.EducationMainSubject?.trim())
-            .filter(pd => pd && pd.length > 0);
+    const subjects = list
+      .map(item => item.EducationMainSubject?.trim())
+      .filter(s => s && s.length > 0);
 
-        const uniqueEducationMainSubject = [...new Set(EducationMainSubject)].sort();
-         return res.status(200).json(uniqueEducationMainSubject);
-    } catch(error){
-        next(error.message);
-    }
-    }
+    const uniqueSubjects = [...new Set(subjects)];
+
+    // Custom sort → N/A always last
+    uniqueSubjects.sort((a, b) => {
+      if (a === "N/A") return 1;       // push a down
+      if (b === "N/A") return -1;      // push b down
+      return a.localeCompare(b);       // normal alphabetical sort
+    });
+
+    return res.status(200).json(uniqueSubjects);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const LifestyleDiseaseType = async (req, res) => {
   try {
