@@ -47,7 +47,7 @@ const ChildSchema = new mongoose.Schema(
     EducationalQualification: { type: String, trim: true, default: "" },
     otherEducationalQualification: { type: String, trim: true, default: "" },
     CurrentlyStudying: { type: String, trim: true, default: "" },
-    DroppedClass: { type: Boolean, default: false },
+    DroppedClass: { type: String, trim: true, default: "" },
     TerminateWithoutCompletion: { type: Boolean, default: false },
     CurrentlyWorking: { type: Boolean, default: false },
     Reason: { type: String, trim: true, default: "" },
