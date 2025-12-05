@@ -48,16 +48,22 @@ export const loginSuperAdmin = async (req, res, next) => {
     if (!admin) {
       return res.status(404).json({ message: "admin not found" });
     }
+
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid password" });
-
     }
-    req.user = admin;
-    next();
 
+    // example: create token and send response
+    // const token = createToken(admin._id);
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      admin,
+      // token,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
