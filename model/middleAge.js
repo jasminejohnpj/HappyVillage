@@ -44,6 +44,8 @@ const middleageSchema = new mongoose.Schema(
     otherEducationalQualification: { type: String, trim: true, default: "" },
     otherQualification: { type: String, trim: true, default: "" },
     EducationMainSubject: { type: String, trim: true, default: "" },
+    OtherMainSubject: { type: String, trim: true, default: "" },
+
     TerminateWithoutCompletion: { type: Boolean, default: false },
     Course: { type: String, trim: true, default: "" },
     Reason: { type: String, trim: true, default: "" },
