@@ -1,15 +1,16 @@
-import express from 'express';
-import { PORT } from './config/env.js';
-import cors from 'cors';
-import { connectToDatabase } from './database/mongodb.js';
-import adminRouter from './routes/admin.routes.js';
-import surveyRouter from './routes/survey.routes.js';
-import userRouter from './routes/user.routes.js';
-import reportRouter from './routes/report.routes.js';
+import express from "express";
+import { PORT } from "./config/env.js";
+import cors from "cors";
+import { connectToDatabase } from "./database/mongodb.js";
+import adminRouter from "./routes/admin.routes.js";
+import surveyRouter from "./routes/survey.routes.js";
+import userRouter from "./routes/user.routes.js";
+import reportRouter from "./routes/report.routes.js";
+import reportRouterV2 from "./routes/reportv2.routes.js";
 const app = express();
 
 const corsOptions = {
-  origin: '*',
+  origin: "*",
   credentials: true,
 };
 
@@ -17,14 +18,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.use('/api/v1/admin', adminRouter);
-app.use('/api/v1/dropdown',surveyRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/dropdown", surveyRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/report" , reportRouter);
+app.use("/api/v1/report", reportRouter);
+app.use("/api/v2/report", reportRouterV2);
 
-
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.send("welcome....");
 });
 
