@@ -96,7 +96,7 @@ const superCitizenSchema = new mongoose.Schema(
     RegularMedicine: { type: Boolean, default: false },
     LifeSatisfaction: {
       type: String,
-      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent,N/A"],
+      enum: ["Poor", "Fair", "Good", "Very Good", "Excellent","N/A"],
       default: "Good",
       trim: true,
     },

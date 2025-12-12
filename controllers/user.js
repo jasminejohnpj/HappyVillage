@@ -168,53 +168,7 @@ export const refreshAccessToken = async (req, res) => {
   }
 };
 
-// --------------------- SURVEY FORM CONTROLLERS ---------------------
 
-// export const submitSurveyForm = async (req, res) => {
-//   try {
-//     const required = ["Village", "Panchayath", "WardNo", "HouseholdHead"];
-//     for (const field of required) {
-//       if (!req.body[field]) {
-//         return res.status(400).json({
-//           success: false,
-//           message: `${field} is required`,
-//         });
-//       }
-//     }
-
-//     const userId = req.user?._id;
-//     if (!userId)
-//       return res.status(401).json({ success: false, message: "Unauthorized" });
-
-//     const safeLocation =
-//       req.body.location &&
-//       req.body.location.type === "Point" &&
-//       Array.isArray(req.body.location.coordinates)
-//         ? req.body.location
-//         : { type: "Point", coordinates: [0, 0] };
-
-//     const newSurvey = new SurveyForm({
-//       ...req.body,
-//       Noofpeopleworkings: toNumber(req.body.Noofpeopleworkings),
-//       RegularIncomePeople: toNumber(req.body.RegularIncomePeople),
-//       MonthlyHouseholdIncome: toNumber(req.body.MonthlyHouseholdIncome),
-//       createdBy: userId,
-//       location: safeLocation,
-//     });
-
-//     await newSurvey.save();
-//     return res.status(201).json({
-//       success: true,
-//       message: "Survey form submitted successfully",
-//       data: newSurvey,
-//     });
-//   } catch (error) {
-//     console.error("❌ Error in submitSurveyForm:", error);
-//     return res
-//       .status(500)
-//       .json({ success: false, message: "Failed to save survey data" });
-//   }
-// };
 export const submitSurveyForm = async (req, res) => {
   try {
     const required = [
