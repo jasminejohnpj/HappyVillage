@@ -1,33 +1,56 @@
 import express from "express";
-import { 
+import {
+  // JSON Reports
   getDemographicReport,
   getWardHouseholdDetails,
   getHouseholdDetails,
-
-  exportWardHouseholdsCSV,
-  checkDatabaseHealth,
   getIndividualReportDetails,
-  exportWardHouseholdsExcel,
-  exportDemographicReportExcel
+
+  // Exports
+
+  // System
+
 } from "../controllers/report.controller.js";
+import { exportDemographicReportExcel, exportWardHouseholdsExcel } from "../controllers/export.controller.js";
+
 
 const router = express.Router();
 
+/* =====================================================
+   📊 REPORTS (JSON APIs)
+===================================================== */
+
+// Demographic report (ward-wise population table)
 router.get("/demographic", getDemographicReport);
 
-
+// Ward → households summary
 router.get("/ward-households", getWardHouseholdDetails);
-router.get("/ward-households/export", exportWardHouseholdsCSV);
-router.get("/individual", getIndividualReportDetails);
 
-// ⭐ New route
+// Single household full survey + members
 router.get("/household-details", getHouseholdDetails);
 
-router.get("/report/demographic/excel", exportDemographicReportExcel);
-router.get("/report/ward-households/excel", exportWardHouseholdsExcel);
-router.get("/report/household/excel", exportWardHouseholdsExcel);
+// Individual person full category form
+router.get("/individual", getIndividualReportDetails);
+
+
+/* =====================================================
+   📥 EXPORTS (Excel / CSV)
+===================================================== */
+
+// Demographic report → Excel
+router.get("/demographic/excel", exportDemographicReportExcel);
+
+// Ward households → Excel
+router.get("/ward-households/excel", exportWardHouseholdsExcel);
+
+// Ward households → CSV
 
 
 
-router.get("/db-health", checkDatabaseHealth);
+/* =====================================================
+   🩺 SYSTEM / ADMIN
+===================================================== */
+
+// Database health & data quality check
+
 export default router;
