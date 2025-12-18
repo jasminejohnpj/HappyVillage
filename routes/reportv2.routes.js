@@ -5,6 +5,7 @@ import {
   getWardHouseholdDetails,
   getHouseholdDetails,
   getIndividualReportDetails,
+  getHouseholdSummaryReport,
 
   // Exports
 
@@ -45,7 +46,7 @@ router.get("/ward-households/excel", exportWardHouseholdsExcel);
 
 // Ward households → CSV
 
-
+router.get("/household-summary", getHouseholdSummaryReport);
 
 /* =====================================================
    🩺 SYSTEM / ADMIN

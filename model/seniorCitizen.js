@@ -129,6 +129,11 @@ const seniorCitizenSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+seniorCitizenSchema.index(
+  { Userid: 1, Familymemberid: 1, Name: 1 },
+  { unique: true }
+);
+
 seniorCitizenSchema.pre("validate", function (next) {
   if (!mongoose.Types.ObjectId.isValid(this.Userid)) {
     this.invalidate("Userid", `Invalid ObjectId format: ${this.Userid}`);

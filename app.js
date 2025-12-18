@@ -37,6 +37,8 @@ app.use((err, req, res, next) => {
   });
 });
 
+
+
 // ✅ FIXED ORDER: Connect first, then start server
 connectToDatabase()
   .then(() => {
