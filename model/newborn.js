@@ -112,6 +112,11 @@ const newbornSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+newbornSchema.index(
+  { Userid: 1, Familymemberid: 1, Name: 1 },
+  { unique: true }
+);
+
 
 // 🧠 Prevent crash from invalid ID before validation
 newbornSchema.pre("validate", function (next) {

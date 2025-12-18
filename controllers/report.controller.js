@@ -4,6 +4,7 @@ import { buildDemographicReport } from "../services/demographic.service.js";
 import { getHouseholdDetailsService } from "../services/household.service.js";
 import { getIndividualDetailsService } from "../services/individual.service.js";
 import { buildWardHouseholdReport } from "../services/wardHousehold.service.js";
+import { buildHouseholdSummaryReport } from "../services/householdSummary.service.js";
 
 /**
  * Calculate age from DOB
@@ -90,3 +91,13 @@ export const getIndividualReportDetails = async (req, res) => {
   }
 };
 
+
+
+export const getHouseholdSummaryReport = async (req, res) => {
+  try {
+    const result = await buildHouseholdSummaryReport(req.query);
+    res.json({ success: true, ...result });
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.message });
+  }
+};

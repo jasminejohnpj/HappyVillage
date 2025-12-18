@@ -93,6 +93,11 @@ const ChildSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+ChildSchema.index(
+  { Userid: 1, Familymemberid: 1, Name: 1 },
+  { unique: true }
+);
+
 // ✅ Double safety against bad ObjectIds
 ChildSchema.pre("validate", function (next) {
   if (!mongoose.Types.ObjectId.isValid(this.Userid)) {
